@@ -1,7 +1,11 @@
+import { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
+import { supabase } from "@/integrations/supabase/client";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { MapPin, IndianRupee, Calendar, Star, Utensils } from "lucide-react";
+import { MapPin, IndianRupee, Calendar, Star, Utensils, Heart, ExternalLink, Trash2 } from "lucide-react";
+import { toast } from "sonner";
 
 interface DestinationCardProps {
   name: string;
@@ -13,6 +17,8 @@ interface DestinationCardProps {
   image: string;
   restaurants: string[];
   description: string;
+  savedTripId?: string;
+  onDelete?: (id: string) => void;
 }
 
 const DestinationCard = ({
@@ -25,7 +31,57 @@ const DestinationCard = ({
   image,
   restaurants,
   description,
+  savedTripId,
+  onDelete,
 }: DestinationCardProps) => {
+  const navigate = useNavigate();
+  const [isSaving, setIsSaving] = useState(false);
+  const [user, setUser] = useState<any>(null);
+
+  useEffect(() => {
+    supabase.auth.getSession().then(({ data: { session } }) => {
+      setUser(session?.user ?? null);
+    });
+  }, []);
+
+  const handleSaveTrip = async () => {
+    if (!user) {
+      toast.error("Please sign in to save trips");
+      navigate("/auth");
+      return;
+    }
+
+    setIsSaving(true);
+    const { error } = await supabase.from("saved_trips").insert({
+      user_id: user.id,
+      destination_name: name,
+      destination_state: state,
+      category,
+      cost,
+      duration,
+      rating,
+      description,
+      restaurants,
+      image_url: image,
+    });
+
+    setIsSaving(false);
+
+    if (error) {
+      if (error.code === "23505") {
+        toast.error("Trip already saved");
+      } else {
+        toast.error("Failed to save trip");
+      }
+    } else {
+      toast.success("Trip saved successfully!");
+    }
+  };
+
+  const handleBooking = () => {
+    const searchQuery = encodeURIComponent(`${name} ${state} travel booking`);
+    window.open(`https://www.google.com/search?q=${searchQuery}`, "_blank");
+  };
   return (
     <Card className="overflow-hidden hover:shadow-[var(--shadow-card)] transition-all duration-300 hover:scale-[1.02] group">
       {/* Image */}
@@ -93,10 +149,33 @@ const DestinationCard = ({
           </div>
         </div>
 
-        {/* View Details Button */}
-        <Button variant="default" className="w-full mt-4">
-          View Full Itinerary
-        </Button>
+        {/* Action Buttons */}
+        <div className="grid grid-cols-2 gap-2 mt-4">
+          {savedTripId && onDelete ? (
+            <Button 
+              variant="destructive" 
+              className="w-full" 
+              onClick={() => onDelete(savedTripId)}
+            >
+              <Trash2 className="w-4 h-4 mr-2" />
+              Remove
+            </Button>
+          ) : (
+            <Button 
+              variant="outline" 
+              className="w-full" 
+              onClick={handleSaveTrip}
+              disabled={isSaving}
+            >
+              <Heart className="w-4 h-4 mr-2" />
+              {isSaving ? "Saving..." : "Save"}
+            </Button>
+          )}
+          <Button variant="default" className="w-full" onClick={handleBooking}>
+            <ExternalLink className="w-4 h-4 mr-2" />
+            Book Now
+          </Button>
+        </div>
       </CardContent>
     </Card>
   );
