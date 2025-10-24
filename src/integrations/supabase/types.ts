@@ -14,7 +14,83 @@ export type Database = {
   }
   public: {
     Tables: {
-      [_ in never]: never
+      profiles: {
+        Row: {
+          created_at: string
+          email: string
+          full_name: string | null
+          id: string
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          email: string
+          full_name?: string | null
+          id: string
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          email?: string
+          full_name?: string | null
+          id?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      saved_trips: {
+        Row: {
+          category: string
+          cost: number
+          created_at: string
+          description: string
+          destination_name: string
+          destination_state: string
+          duration: string
+          id: string
+          image_url: string
+          rating: number
+          restaurants: string[]
+          user_id: string
+        }
+        Insert: {
+          category: string
+          cost: number
+          created_at?: string
+          description: string
+          destination_name: string
+          destination_state: string
+          duration: string
+          id?: string
+          image_url: string
+          rating: number
+          restaurants: string[]
+          user_id: string
+        }
+        Update: {
+          category?: string
+          cost?: number
+          created_at?: string
+          description?: string
+          destination_name?: string
+          destination_state?: string
+          duration?: string
+          id?: string
+          image_url?: string
+          rating?: number
+          restaurants?: string[]
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "saved_trips_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
     }
     Views: {
       [_ in never]: never
