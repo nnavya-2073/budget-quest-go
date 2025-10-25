@@ -4,8 +4,10 @@ import { supabase } from "@/integrations/supabase/client";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { MapPin, IndianRupee, Calendar, Star, Utensils, Heart, ExternalLink, Trash2 } from "lucide-react";
+import { MapPin, IndianRupee, Calendar, Star, Utensils, Heart, ExternalLink, Trash2, TrendingUp } from "lucide-react";
 import { toast } from "sonner";
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
+import CostBreakdown from "./CostBreakdown";
 
 interface DestinationCardProps {
   name: string;
@@ -152,30 +154,62 @@ const DestinationCard = ({
         {/* Action Buttons */}
         <div className="grid grid-cols-2 gap-2 mt-4">
           {savedTripId && onDelete ? (
-            <Button 
-              variant="destructive" 
-              className="w-full" 
-              onClick={() => onDelete(savedTripId)}
-            >
-              <Trash2 className="w-4 h-4 mr-2" />
-              Remove
-            </Button>
+            <>
+              <Dialog>
+                <DialogTrigger asChild>
+                  <Button variant="outline" className="w-full">
+                    <TrendingUp className="w-4 h-4 mr-2" />
+                    Breakdown
+                  </Button>
+                </DialogTrigger>
+                <DialogContent className="max-w-lg">
+                  <DialogHeader>
+                    <DialogTitle>{name} - Cost Details</DialogTitle>
+                  </DialogHeader>
+                  <CostBreakdown totalCost={cost} />
+                </DialogContent>
+              </Dialog>
+              <Button 
+                variant="destructive" 
+                className="w-full" 
+                onClick={() => onDelete(savedTripId)}
+              >
+                <Trash2 className="w-4 h-4 mr-2" />
+                Remove
+              </Button>
+            </>
           ) : (
-            <Button 
-              variant="outline" 
-              className="w-full" 
-              onClick={handleSaveTrip}
-              disabled={isSaving}
-            >
-              <Heart className="w-4 h-4 mr-2" />
-              {isSaving ? "Saving..." : "Save"}
-            </Button>
+            <>
+              <Button 
+                variant="outline" 
+                className="w-full" 
+                onClick={handleSaveTrip}
+                disabled={isSaving}
+              >
+                <Heart className="w-4 h-4 mr-2" />
+                {isSaving ? "Saving..." : "Save"}
+              </Button>
+              <Dialog>
+                <DialogTrigger asChild>
+                  <Button variant="outline" className="w-full">
+                    <TrendingUp className="w-4 h-4 mr-2" />
+                    Breakdown
+                  </Button>
+                </DialogTrigger>
+                <DialogContent className="max-w-lg">
+                  <DialogHeader>
+                    <DialogTitle>{name} - Cost Details</DialogTitle>
+                  </DialogHeader>
+                  <CostBreakdown totalCost={cost} />
+                </DialogContent>
+              </Dialog>
+            </>
           )}
-          <Button variant="default" className="w-full" onClick={handleBooking}>
-            <ExternalLink className="w-4 h-4 mr-2" />
-            Book Now
-          </Button>
         </div>
+        <Button variant="default" className="w-full mt-2" onClick={handleBooking}>
+          <ExternalLink className="w-4 h-4 mr-2" />
+          Book Now
+        </Button>
       </CardContent>
     </Card>
   );
