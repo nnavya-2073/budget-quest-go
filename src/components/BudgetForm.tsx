@@ -5,7 +5,8 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Slider } from "@/components/ui/slider";
-import { Sparkles, IndianRupee } from "lucide-react";
+import { Checkbox } from "@/components/ui/checkbox";
+import { Sparkles, IndianRupee, Shuffle } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { toast } from "sonner";
 
@@ -16,12 +17,18 @@ const BudgetForm = () => {
   const [mood, setMood] = useState("");
   const [cuisine, setCuisine] = useState("");
   const [departureCity, setDepartureCity] = useState("");
+  const [surpriseMe, setSurpriseMe] = useState(false);
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     
-    if (!mood || !cuisine || !departureCity) {
-      toast.error("Please fill in all fields");
+    if (!departureCity) {
+      toast.error("Please enter your departure city");
+      return;
+    }
+
+    if (!surpriseMe && (!mood || !cuisine)) {
+      toast.error("Please fill in all fields or select 'Surprise Me'");
       return;
     }
 
@@ -29,9 +36,10 @@ const BudgetForm = () => {
     const preferences = {
       budget: budget[0],
       duration,
-      mood,
-      cuisine,
+      mood: surpriseMe ? "surprise" : mood,
+      cuisine: surpriseMe ? "surprise" : cuisine,
       departureCity,
+      surpriseMe,
     };
     
     sessionStorage.setItem('travelPreferences', JSON.stringify(preferences));
@@ -127,12 +135,39 @@ const BudgetForm = () => {
                 </Select>
               </div>
 
+              {/* Surprise Me Option */}
+              <div className="flex items-center space-x-2 p-4 bg-muted/50 rounded-lg border border-primary/20">
+                <Checkbox 
+                  id="surpriseMe" 
+                  checked={surpriseMe}
+                  onCheckedChange={(checked) => {
+                    setSurpriseMe(checked as boolean);
+                    if (checked) {
+                      setMood("");
+                      setCuisine("");
+                    }
+                  }}
+                />
+                <div className="flex-1">
+                  <Label 
+                    htmlFor="surpriseMe" 
+                    className="text-base font-semibold cursor-pointer flex items-center gap-2"
+                  >
+                    <Shuffle className="w-4 h-4 text-primary" />
+                    Surprise Me with Random Destinations
+                  </Label>
+                  <p className="text-xs text-muted-foreground mt-1">
+                    Let AI pick exciting random places based on your budget and departure city
+                  </p>
+                </div>
+              </div>
+
               {/* Mood */}
               <div className="space-y-2">
                 <Label htmlFor="mood" className="text-base font-semibold">
-                  Travel Mood
+                  Travel Mood {surpriseMe && <span className="text-xs text-muted-foreground">(Optional)</span>}
                 </Label>
-                <Select value={mood} onValueChange={setMood}>
+                <Select value={mood} onValueChange={setMood} disabled={surpriseMe}>
                   <SelectTrigger id="mood">
                     <SelectValue placeholder="What's your vibe?" />
                   </SelectTrigger>
@@ -150,9 +185,9 @@ const BudgetForm = () => {
               {/* Cuisine */}
               <div className="space-y-2">
                 <Label htmlFor="cuisine" className="text-base font-semibold">
-                  Food Preference
+                  Food Preference {surpriseMe && <span className="text-xs text-muted-foreground">(Optional)</span>}
                 </Label>
-                <Select value={cuisine} onValueChange={setCuisine}>
+                <Select value={cuisine} onValueChange={setCuisine} disabled={surpriseMe}>
                   <SelectTrigger id="cuisine">
                     <SelectValue placeholder="What do you like to eat?" />
                   </SelectTrigger>

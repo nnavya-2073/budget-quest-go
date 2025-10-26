@@ -11,21 +11,22 @@ serve(async (req) => {
   }
 
   try {
-    const { budget, duration, mood, cuisine, departureCity } = await req.json();
+    const { budget, duration, mood, cuisine, departureCity, surpriseMe } = await req.json();
     const LOVABLE_API_KEY = Deno.env.get('LOVABLE_API_KEY');
 
     if (!LOVABLE_API_KEY) {
       throw new Error('LOVABLE_API_KEY is not configured');
     }
 
-    console.log('Generating recommendations for:', { budget, duration, mood, cuisine, departureCity });
+    console.log('Generating recommendations for:', { budget, duration, mood, cuisine, departureCity, surpriseMe });
 
     // Create detailed prompt for AI
     const systemPrompt = `You are an expert travel advisor specializing in budget-optimized travel planning for India. 
     Your task is to recommend 3-5 diverse travel destinations based on the user's preferences.
     
     For each destination, provide:
-    - Name and State
+    - City name (not just the tourist spot, but the actual city/town)
+    - State
     - Category (Adventure, Beach, Culture, Nature, etc.)
     - Estimated total cost (within budget)
     - Trip duration
@@ -36,11 +37,20 @@ serve(async (req) => {
     - Estimated travel duration from departure city (e.g., "2 hours by flight", "8 hours by train", "5 hours by car")
     
     Consider real travel costs including accommodation, food, local transport, and activities.
-    Ensure recommendations match the user's mood and cuisine preferences.
+    ${surpriseMe ? 'IMPORTANT: User wants RANDOM and UNEXPECTED destinations! Pick diverse, lesser-known, and surprising places that most tourists might not consider. Be creative and adventurous with your recommendations!' : 'Ensure recommendations match the user\'s mood and cuisine preferences.'}
     Make cost estimates realistic for Indian travel.
     Calculate realistic distances and travel times between Indian cities.`;
 
-    const userPrompt = `Find perfect travel destinations for:
+    const userPrompt = surpriseMe 
+      ? `Find RANDOM and SURPRISING travel destinations for an adventurous traveler:
+    - Departure City: ${departureCity}
+    - Budget: ₹${budget}
+    - Duration: ${duration} days
+    
+    IMPORTANT: Recommend unexpected, offbeat, and lesser-known destinations! Think beyond typical tourist spots.
+    Include hidden gems, unusual places, and destinations with unique experiences.
+    For each destination, include the distance and travel duration from ${departureCity}.`
+      : `Find perfect travel destinations for:
     - Departure City: ${departureCity}
     - Budget: ₹${budget}
     - Duration: ${duration} days
@@ -76,7 +86,8 @@ serve(async (req) => {
                     items: {
                       type: 'object',
                       properties: {
-                        name: { type: 'string', description: 'Destination name' },
+                        city: { type: 'string', description: 'City/town name of the destination' },
+                        name: { type: 'string', description: 'Tourist destination or area name' },
                         state: { type: 'string', description: 'State in India' },
                         category: { type: 'string', description: 'Type of destination' },
                         cost: { type: 'number', description: 'Total estimated cost in INR' },
@@ -91,7 +102,7 @@ serve(async (req) => {
                         distance: { type: 'number', description: 'Distance from departure city in kilometers' },
                         travelDuration: { type: 'string', description: 'Estimated travel time from departure city' }
                       },
-                      required: ['name', 'state', 'category', 'cost', 'duration', 'rating', 'description', 'restaurants', 'distance', 'travelDuration'],
+                      required: ['city', 'name', 'state', 'category', 'cost', 'duration', 'rating', 'description', 'restaurants', 'distance', 'travelDuration'],
                       additionalProperties: false
                     }
                   }

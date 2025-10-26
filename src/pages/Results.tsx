@@ -13,6 +13,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 
 interface Destination {
+  city: string;
   name: string;
   state: string;
   category: string;
@@ -58,6 +59,7 @@ const Results = () => {
           mood: prefs.mood,
           cuisine: prefs.cuisine,
           departureCity: prefs.departureCity,
+          surpriseMe: prefs.surpriseMe,
         },
       });
 
@@ -74,6 +76,7 @@ const Results = () => {
       // Fallback sample data
       setDestinations([
         {
+          city: "Manali",
           name: "Manali",
           state: "Himachal Pradesh",
           category: "Adventure",
@@ -83,8 +86,11 @@ const Results = () => {
           image: mountainsImg,
           restaurants: ["Johnson's Cafe", "The Lazy Dog", "Cafe 1947"],
           description: "A paradise for adventure seekers with stunning Himalayan landscapes, snow-capped peaks, and thrilling activities.",
+          distance: 500,
+          travelDuration: "12 hours by car"
         },
         {
+          city: "Panaji",
           name: "Goa",
           state: "Goa",
           category: "Beach & Relaxation",
@@ -94,8 +100,11 @@ const Results = () => {
           image: beachImg,
           restaurants: ["Thalassa", "Pousada by the Beach", "Fisherman's Wharf"],
           description: "Sun, sand, and sea! Perfect blend of beach relaxation, vibrant nightlife, and Portuguese heritage.",
+          distance: 600,
+          travelDuration: "1.5 hours by flight"
         },
         {
+          city: "Jaipur",
           name: "Jaipur",
           state: "Rajasthan",
           category: "Culture & Heritage",
@@ -105,10 +114,13 @@ const Results = () => {
           image: cultureImg,
           restaurants: ["Laxmi Mishthan Bhandar", "Peacock Rooftop", "Handi Restaurant"],
           description: "The Pink City showcases magnificent forts, palaces, and rich Rajasthani culture and cuisine.",
+          distance: 400,
+          travelDuration: "1 hour by flight"
         },
       ]);
       setFilteredDestinations([
         {
+          city: "Manali",
           name: "Manali",
           state: "Himachal Pradesh",
           category: "Adventure",
@@ -118,8 +130,11 @@ const Results = () => {
           image: mountainsImg,
           restaurants: ["Johnson's Cafe", "The Lazy Dog", "Cafe 1947"],
           description: "A paradise for adventure seekers with stunning Himalayan landscapes, snow-capped peaks, and thrilling activities.",
+          distance: 500,
+          travelDuration: "12 hours by car"
         },
         {
+          city: "Panaji",
           name: "Goa",
           state: "Goa",
           category: "Beach & Relaxation",
@@ -129,8 +144,11 @@ const Results = () => {
           image: beachImg,
           restaurants: ["Thalassa", "Pousada by the Beach", "Fisherman's Wharf"],
           description: "Sun, sand, and sea! Perfect blend of beach relaxation, vibrant nightlife, and Portuguese heritage.",
+          distance: 600,
+          travelDuration: "1.5 hours by flight"
         },
         {
+          city: "Jaipur",
           name: "Jaipur",
           state: "Rajasthan",
           category: "Culture & Heritage",
@@ -140,6 +158,8 @@ const Results = () => {
           image: cultureImg,
           restaurants: ["Laxmi Mishthan Bhandar", "Peacock Rooftop", "Handi Restaurant"],
           description: "The Pink City showcases magnificent forts, palaces, and rich Rajasthani culture and cuisine.",
+          distance: 400,
+          travelDuration: "1 hour by flight"
         },
       ]);
     } finally {

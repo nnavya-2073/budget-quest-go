@@ -10,6 +10,7 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from 
 import CostBreakdown from "./CostBreakdown";
 
 interface DestinationCardProps {
+  city: string;
   name: string;
   state: string;
   category: string;
@@ -26,6 +27,7 @@ interface DestinationCardProps {
 }
 
 const DestinationCard = ({
+  city,
   name,
   state,
   category,
@@ -60,7 +62,7 @@ const DestinationCard = ({
     setIsSaving(true);
     const { error } = await supabase.from("saved_trips").insert({
       user_id: user.id,
-      destination_name: name,
+      destination_name: city || name,
       destination_state: state,
       category,
       cost,
@@ -114,7 +116,7 @@ const DestinationCard = ({
             <CardDescription className="space-y-1">
               <div className="flex items-center gap-1">
                 <MapPin className="w-4 h-4" />
-                {state}
+                {city}, {state}
               </div>
               {distance && travelDuration && (
                 <div className="flex items-center gap-1 text-xs">

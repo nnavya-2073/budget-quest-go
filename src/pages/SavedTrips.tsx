@@ -94,6 +94,7 @@ const SavedTrips = () => {
               {savedTrips.map((trip) => (
                 <DestinationCard
                   key={trip.id}
+                  city={trip.destination_name}
                   name={trip.destination_name}
                   state={trip.destination_state}
                   category={trip.category}
