@@ -4,7 +4,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { MapPin, IndianRupee, Calendar, Star, Utensils, Heart, ExternalLink, Trash2, TrendingUp } from "lucide-react";
+import { MapPin, IndianRupee, Calendar, Star, Utensils, Heart, ExternalLink, Trash2, TrendingUp, Navigation } from "lucide-react";
 import { toast } from "sonner";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import CostBreakdown from "./CostBreakdown";
@@ -19,6 +19,8 @@ interface DestinationCardProps {
   image: string;
   restaurants: string[];
   description: string;
+  distance?: number;
+  travelDuration?: string;
   savedTripId?: string;
   onDelete?: (id: string) => void;
 }
@@ -33,6 +35,8 @@ const DestinationCard = ({
   image,
   restaurants,
   description,
+  distance,
+  travelDuration,
   savedTripId,
   onDelete,
 }: DestinationCardProps) => {
@@ -107,9 +111,17 @@ const DestinationCard = ({
         <div className="flex items-start justify-between gap-2">
           <div>
             <CardTitle className="text-2xl mb-2">{name}</CardTitle>
-            <CardDescription className="flex items-center gap-1">
-              <MapPin className="w-4 h-4" />
-              {state}
+            <CardDescription className="space-y-1">
+              <div className="flex items-center gap-1">
+                <MapPin className="w-4 h-4" />
+                {state}
+              </div>
+              {distance && travelDuration && (
+                <div className="flex items-center gap-1 text-xs">
+                  <Navigation className="w-3 h-3" />
+                  {distance.toLocaleString()} km • {travelDuration}
+                </div>
+              )}
             </CardDescription>
           </div>
         </div>

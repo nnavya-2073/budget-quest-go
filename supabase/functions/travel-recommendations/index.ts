@@ -11,14 +11,14 @@ serve(async (req) => {
   }
 
   try {
-    const { budget, duration, mood, cuisine } = await req.json();
+    const { budget, duration, mood, cuisine, departureCity } = await req.json();
     const LOVABLE_API_KEY = Deno.env.get('LOVABLE_API_KEY');
 
     if (!LOVABLE_API_KEY) {
       throw new Error('LOVABLE_API_KEY is not configured');
     }
 
-    console.log('Generating recommendations for:', { budget, duration, mood, cuisine });
+    console.log('Generating recommendations for:', { budget, duration, mood, cuisine, departureCity });
 
     // Create detailed prompt for AI
     const systemPrompt = `You are an expert travel advisor specializing in budget-optimized travel planning for India. 
@@ -32,18 +32,23 @@ serve(async (req) => {
     - Rating (4.0-5.0)
     - Brief description (1-2 sentences)
     - Top 3-5 restaurant recommendations
+    - Approximate distance from departure city in kilometers
+    - Estimated travel duration from departure city (e.g., "2 hours by flight", "8 hours by train", "5 hours by car")
     
     Consider real travel costs including accommodation, food, local transport, and activities.
     Ensure recommendations match the user's mood and cuisine preferences.
-    Make cost estimates realistic for Indian travel.`;
+    Make cost estimates realistic for Indian travel.
+    Calculate realistic distances and travel times between Indian cities.`;
 
     const userPrompt = `Find perfect travel destinations for:
+    - Departure City: ${departureCity}
     - Budget: ₹${budget}
     - Duration: ${duration} days
     - Mood: ${mood}
     - Cuisine preference: ${cuisine}
     
-    Return diverse destinations that match these criteria and provide a balanced mix of experiences.`;
+    Return diverse destinations that match these criteria and provide a balanced mix of experiences.
+    For each destination, include the distance and travel duration from ${departureCity}.`;
 
     const response = await fetch('https://ai.gateway.lovable.dev/v1/chat/completions', {
       method: 'POST',
@@ -82,9 +87,11 @@ serve(async (req) => {
                           type: 'array',
                           items: { type: 'string' },
                           description: 'Top restaurant names'
-                        }
+                        },
+                        distance: { type: 'number', description: 'Distance from departure city in kilometers' },
+                        travelDuration: { type: 'string', description: 'Estimated travel time from departure city' }
                       },
-                      required: ['name', 'state', 'category', 'cost', 'duration', 'rating', 'description', 'restaurants'],
+                      required: ['name', 'state', 'category', 'cost', 'duration', 'rating', 'description', 'restaurants', 'distance', 'travelDuration'],
                       additionalProperties: false
                     }
                   }

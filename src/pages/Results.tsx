@@ -22,6 +22,8 @@ interface Destination {
   image: string;
   restaurants: string[];
   description: string;
+  distance?: number;
+  travelDuration?: string;
 }
 
 const Results = () => {
@@ -55,6 +57,7 @@ const Results = () => {
           duration: prefs.duration,
           mood: prefs.mood,
           cuisine: prefs.cuisine,
+          departureCity: prefs.departureCity,
         },
       });
 
@@ -208,9 +211,9 @@ const Results = () => {
               <h1 className="text-4xl font-bold mb-4">
                 Your <span className="text-primary">Personalized</span> Destinations
               </h1>
-              {preferences && (
+             {preferences && (
                 <p className="text-lg text-muted-foreground">
-                  Based on your budget of ₹{preferences.budget.toLocaleString('en-IN')} for {preferences.duration} days
+                  Based on your budget of ₹{preferences.budget.toLocaleString('en-IN')} for {preferences.duration} days from {preferences.departureCity}
                 </p>
               )}
             </div>

@@ -15,11 +15,12 @@ const BudgetForm = () => {
   const [duration, setDuration] = useState("5");
   const [mood, setMood] = useState("");
   const [cuisine, setCuisine] = useState("");
+  const [departureCity, setDepartureCity] = useState("");
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     
-    if (!mood || !cuisine) {
+    if (!mood || !cuisine || !departureCity) {
       toast.error("Please fill in all fields");
       return;
     }
@@ -30,6 +31,7 @@ const BudgetForm = () => {
       duration,
       mood,
       cuisine,
+      departureCity,
     };
     
     sessionStorage.setItem('travelPreferences', JSON.stringify(preferences));
@@ -88,6 +90,21 @@ const BudgetForm = () => {
                 </div>
               </div>
 
+              {/* Departure City */}
+              <div className="space-y-2">
+                <Label htmlFor="departureCity" className="text-base font-semibold">
+                  Departure City
+                </Label>
+                <Input
+                  id="departureCity"
+                  type="text"
+                  placeholder="e.g., Mumbai, Delhi, Bangalore"
+                  value={departureCity}
+                  onChange={(e) => setDepartureCity(e.target.value)}
+                  className="text-base"
+                />
+              </div>
+
               {/* Duration */}
               <div className="space-y-2">
                 <Label htmlFor="duration" className="text-base font-semibold">
@@ -98,10 +115,14 @@ const BudgetForm = () => {
                     <SelectValue placeholder="Select duration" />
                   </SelectTrigger>
                   <SelectContent>
-                    <SelectItem value="2">2-3 days (Weekend)</SelectItem>
-                    <SelectItem value="5">5-7 days (Week)</SelectItem>
-                    <SelectItem value="10">10-14 days (Extended)</SelectItem>
-                    <SelectItem value="15">15+ days (Long trip)</SelectItem>
+                    <SelectItem value="1">1 day</SelectItem>
+                    <SelectItem value="2">2-3 days</SelectItem>
+                    <SelectItem value="5">5-7 days</SelectItem>
+                    <SelectItem value="10">10-14 days</SelectItem>
+                    <SelectItem value="21">3 weeks</SelectItem>
+                    <SelectItem value="30">1 month</SelectItem>
+                    <SelectItem value="60">2 months</SelectItem>
+                    <SelectItem value="90">3 months</SelectItem>
                   </SelectContent>
                 </Select>
               </div>
