@@ -11,16 +11,18 @@ serve(async (req) => {
   }
 
   try {
-    const { budget, duration, mood, cuisine, departureCity, surpriseMe } = await req.json();
+    const { budget, duration, mood, cuisine, departureCity, surpriseMe, travelMode } = await req.json();
     const LOVABLE_API_KEY = Deno.env.get('LOVABLE_API_KEY');
 
     if (!LOVABLE_API_KEY) {
       throw new Error('LOVABLE_API_KEY is not configured');
     }
 
-    console.log('Generating recommendations for:', { budget, duration, mood, cuisine, departureCity, surpriseMe });
+    console.log('Generating recommendations for:', { budget, duration, mood, cuisine, departureCity, surpriseMe, travelMode });
 
     // Create detailed prompt for AI
+    const travelModeText = travelMode === 'any' ? 'Consider the best travel mode (flight/train/car) for each destination' : `User prefers traveling by ${travelMode}`;
+    
     const systemPrompt = `You are an expert travel advisor specializing in budget-optimized travel planning for India. 
     Your task is to recommend 3-5 diverse travel destinations based on the user's preferences.
     
@@ -35,8 +37,11 @@ serve(async (req) => {
     - Top 3-5 restaurant recommendations
     - Approximate distance from departure city in kilometers
     - Estimated travel duration from departure city (e.g., "2 hours by flight", "8 hours by train", "5 hours by car")
+    - Day-by-day itinerary with 3-4 activities per day
+    - 3-5 practical budget-saving tips specific to this destination
     
     Consider real travel costs including accommodation, food, local transport, and activities.
+    ${travelModeText}.
     ${surpriseMe ? 'IMPORTANT: User wants RANDOM and UNEXPECTED destinations! Pick diverse, lesser-known, and surprising places that most tourists might not consider. Be creative and adventurous with your recommendations!' : 'Ensure recommendations match the user\'s mood and cuisine preferences.'}
     Make cost estimates realistic for Indian travel.
     Calculate realistic distances and travel times between Indian cities.`;
@@ -45,20 +50,22 @@ serve(async (req) => {
       ? `Find RANDOM and SURPRISING travel destinations for an adventurous traveler:
     - Departure City: ${departureCity}
     - Budget: ₹${budget}
-    - Duration: ${duration} days
+    - Duration: ${duration}
+    - Travel Mode: ${travelMode === 'any' ? 'Optimize for best option' : travelMode}
     
     IMPORTANT: Recommend unexpected, offbeat, and lesser-known destinations! Think beyond typical tourist spots.
     Include hidden gems, unusual places, and destinations with unique experiences.
-    For each destination, include the distance and travel duration from ${departureCity}.`
+    For each destination, include the distance, travel duration from ${departureCity}, a detailed day-by-day itinerary, and budget-saving tips.`
       : `Find perfect travel destinations for:
     - Departure City: ${departureCity}
     - Budget: ₹${budget}
-    - Duration: ${duration} days
+    - Duration: ${duration}
     - Mood: ${mood}
     - Cuisine preference: ${cuisine}
+    - Travel Mode: ${travelMode === 'any' ? 'Optimize for best option' : travelMode}
     
     Return diverse destinations that match these criteria and provide a balanced mix of experiences.
-    For each destination, include the distance and travel duration from ${departureCity}.`;
+    For each destination, include the distance, travel duration from ${departureCity}, a detailed day-by-day itinerary, and budget-saving tips.`;
 
     const response = await fetch('https://ai.gateway.lovable.dev/v1/chat/completions', {
       method: 'POST',
@@ -100,9 +107,29 @@ serve(async (req) => {
                           description: 'Top restaurant names'
                         },
                         distance: { type: 'number', description: 'Distance from departure city in kilometers' },
-                        travelDuration: { type: 'string', description: 'Estimated travel time from departure city' }
+                        travelDuration: { type: 'string', description: 'Estimated travel time from departure city' },
+                        itinerary: {
+                          type: 'array',
+                          items: {
+                            type: 'object',
+                            properties: {
+                              day: { type: 'number', description: 'Day number' },
+                              activities: {
+                                type: 'array',
+                                items: { type: 'string' },
+                                description: 'Activities for this day'
+                              }
+                            }
+                          },
+                          description: 'Day-by-day itinerary'
+                        },
+                        budgetTips: {
+                          type: 'array',
+                          items: { type: 'string' },
+                          description: 'Money-saving tips for this destination'
+                        }
                       },
-                      required: ['city', 'name', 'state', 'category', 'cost', 'duration', 'rating', 'description', 'restaurants', 'distance', 'travelDuration'],
+                      required: ['city', 'name', 'state', 'category', 'cost', 'duration', 'rating', 'description', 'restaurants', 'distance', 'travelDuration', 'itinerary', 'budgetTips'],
                       additionalProperties: false
                     }
                   }

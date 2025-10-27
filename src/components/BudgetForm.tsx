@@ -18,6 +18,7 @@ const BudgetForm = () => {
   const [cuisine, setCuisine] = useState("");
   const [departureCity, setDepartureCity] = useState("");
   const [surpriseMe, setSurpriseMe] = useState(false);
+  const [travelMode, setTravelMode] = useState("any");
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -40,6 +41,7 @@ const BudgetForm = () => {
       cuisine: surpriseMe ? "surprise" : cuisine,
       departureCity,
       surpriseMe,
+      travelMode,
     };
     
     sessionStorage.setItem('travelPreferences', JSON.stringify(preferences));
@@ -131,6 +133,24 @@ const BudgetForm = () => {
                     <SelectItem value="30">1 month</SelectItem>
                     <SelectItem value="60">2 months</SelectItem>
                     <SelectItem value="90">3 months</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
+
+              {/* Travel Mode */}
+              <div className="space-y-2">
+                <Label htmlFor="travelMode" className="text-base font-semibold">
+                  Preferred Travel Mode
+                </Label>
+                <Select value={travelMode} onValueChange={setTravelMode}>
+                  <SelectTrigger id="travelMode">
+                    <SelectValue placeholder="Select travel mode" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="any">Any (Optimize for best option)</SelectItem>
+                    <SelectItem value="flight">✈️ Flight</SelectItem>
+                    <SelectItem value="train">🚂 Train</SelectItem>
+                    <SelectItem value="car">🚗 Car/Road Trip</SelectItem>
                   </SelectContent>
                 </Select>
               </div>

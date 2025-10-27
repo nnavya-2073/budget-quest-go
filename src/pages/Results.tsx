@@ -25,6 +25,8 @@ interface Destination {
   description: string;
   distance?: number;
   travelDuration?: string;
+  itinerary?: Array<{ day: number; activities: string[] }>;
+  budgetTips?: string[];
 }
 
 const Results = () => {
@@ -60,6 +62,7 @@ const Results = () => {
           cuisine: prefs.cuisine,
           departureCity: prefs.departureCity,
           surpriseMe: prefs.surpriseMe,
+          travelMode: prefs.travelMode || 'any',
         },
       });
 
@@ -87,7 +90,12 @@ const Results = () => {
           restaurants: ["Johnson's Cafe", "The Lazy Dog", "Cafe 1947"],
           description: "A paradise for adventure seekers with stunning Himalayan landscapes, snow-capped peaks, and thrilling activities.",
           distance: 500,
-          travelDuration: "12 hours by car"
+          travelDuration: "12 hours by car",
+          itinerary: [
+            { day: 1, activities: ["Arrival and check-in", "Explore Mall Road", "Visit Hadimba Temple", "Evening at Old Manali"] },
+            { day: 2, activities: ["Solang Valley adventure sports", "Paragliding experience", "Cable car ride", "Dinner at Cafe 1947"] }
+          ],
+          budgetTips: ["Book hotels in advance for better rates", "Use local buses instead of taxis", "Eat at local dhabas", "Visit during off-season for discounts"]
         },
         {
           city: "Panaji",
@@ -101,7 +109,13 @@ const Results = () => {
           restaurants: ["Thalassa", "Pousada by the Beach", "Fisherman's Wharf"],
           description: "Sun, sand, and sea! Perfect blend of beach relaxation, vibrant nightlife, and Portuguese heritage.",
           distance: 600,
-          travelDuration: "1.5 hours by flight"
+          travelDuration: "1.5 hours by flight",
+          itinerary: [
+            { day: 1, activities: ["Arrival at Goa airport", "Check-in to beach resort", "Calangute Beach sunset", "Beach shack dinner"] },
+            { day: 2, activities: ["Water sports at Baga Beach", "Visit Fort Aguada", "Old Goa church tour", "Nightlife at Tito's Lane"] },
+            { day: 3, activities: ["South Goa beaches", "Palolem Beach relaxation", "Cabo de Rama Fort", "Beachside seafood dinner"] }
+          ],
+          budgetTips: ["Visit during monsoon for 50% cheaper rates", "Rent a scooter for affordable transport", "Stay in hostels or guesthouses", "Eat at beach shacks instead of fancy restaurants", "Book flight tickets in advance"]
         },
         {
           city: "Jaipur",
@@ -115,7 +129,12 @@ const Results = () => {
           restaurants: ["Laxmi Mishthan Bhandar", "Peacock Rooftop", "Handi Restaurant"],
           description: "The Pink City showcases magnificent forts, palaces, and rich Rajasthani culture and cuisine.",
           distance: 400,
-          travelDuration: "1 hour by flight"
+          travelDuration: "1 hour by flight",
+          itinerary: [
+            { day: 1, activities: ["Amber Fort morning visit", "Elephant ride experience", "City Palace tour", "Evening at Hawa Mahal", "Shopping at Johari Bazaar"] },
+            { day: 2, activities: ["Jantar Mantar Observatory", "Albert Hall Museum", "Nahargarh Fort sunset", "Traditional Rajasthani dinner"] }
+          ],
+          budgetTips: ["Use metro and local buses", "Book combo tickets for forts", "Stay in budget hotels in C-Scheme area", "Eat at Laxmi Mishthan Bhandar for authentic cheap food", "Bargain in markets"]
         },
       ]);
       setFilteredDestinations([
@@ -131,7 +150,12 @@ const Results = () => {
           restaurants: ["Johnson's Cafe", "The Lazy Dog", "Cafe 1947"],
           description: "A paradise for adventure seekers with stunning Himalayan landscapes, snow-capped peaks, and thrilling activities.",
           distance: 500,
-          travelDuration: "12 hours by car"
+          travelDuration: "12 hours by car",
+          itinerary: [
+            { day: 1, activities: ["Arrival and check-in", "Explore Mall Road", "Visit Hadimba Temple", "Evening at Old Manali"] },
+            { day: 2, activities: ["Solang Valley adventure sports", "Paragliding experience", "Cable car ride", "Dinner at Cafe 1947"] }
+          ],
+          budgetTips: ["Book hotels in advance for better rates", "Use local buses instead of taxis", "Eat at local dhabas", "Visit during off-season for discounts"]
         },
         {
           city: "Panaji",
@@ -145,7 +169,13 @@ const Results = () => {
           restaurants: ["Thalassa", "Pousada by the Beach", "Fisherman's Wharf"],
           description: "Sun, sand, and sea! Perfect blend of beach relaxation, vibrant nightlife, and Portuguese heritage.",
           distance: 600,
-          travelDuration: "1.5 hours by flight"
+          travelDuration: "1.5 hours by flight",
+          itinerary: [
+            { day: 1, activities: ["Arrival at Goa airport", "Check-in to beach resort", "Calangute Beach sunset", "Beach shack dinner"] },
+            { day: 2, activities: ["Water sports at Baga Beach", "Visit Fort Aguada", "Old Goa church tour", "Nightlife at Tito's Lane"] },
+            { day: 3, activities: ["South Goa beaches", "Palolem Beach relaxation", "Cabo de Rama Fort", "Beachside seafood dinner"] }
+          ],
+          budgetTips: ["Visit during monsoon for 50% cheaper rates", "Rent a scooter for affordable transport", "Stay in hostels or guesthouses", "Eat at beach shacks instead of fancy restaurants", "Book flight tickets in advance"]
         },
         {
           city: "Jaipur",
@@ -159,7 +189,12 @@ const Results = () => {
           restaurants: ["Laxmi Mishthan Bhandar", "Peacock Rooftop", "Handi Restaurant"],
           description: "The Pink City showcases magnificent forts, palaces, and rich Rajasthani culture and cuisine.",
           distance: 400,
-          travelDuration: "1 hour by flight"
+          travelDuration: "1 hour by flight",
+          itinerary: [
+            { day: 1, activities: ["Amber Fort morning visit", "Elephant ride experience", "City Palace tour", "Evening at Hawa Mahal", "Shopping at Johari Bazaar"] },
+            { day: 2, activities: ["Jantar Mantar Observatory", "Albert Hall Museum", "Nahargarh Fort sunset", "Traditional Rajasthani dinner"] }
+          ],
+          budgetTips: ["Use metro and local buses", "Book combo tickets for forts", "Stay in budget hotels in C-Scheme area", "Eat at Laxmi Mishthan Bhandar for authentic cheap food", "Bargain in markets"]
         },
       ]);
     } finally {
@@ -307,7 +342,12 @@ const Results = () => {
 
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
               {filteredDestinations.map((destination, index) => (
-                <DestinationCard key={index} {...destination} />
+                <DestinationCard 
+                  key={index} 
+                  {...destination}
+                  itinerary={destination.itinerary}
+                  budgetTips={destination.budgetTips}
+                />
               ))}
             </div>
 

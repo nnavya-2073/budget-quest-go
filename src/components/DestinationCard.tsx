@@ -4,7 +4,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { MapPin, IndianRupee, Calendar, Star, Utensils, Heart, ExternalLink, Trash2, TrendingUp, Navigation } from "lucide-react";
+import { MapPin, IndianRupee, Calendar, Star, Utensils, Heart, ExternalLink, Trash2, TrendingUp, Navigation, Map, Lightbulb } from "lucide-react";
 import { toast } from "sonner";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import CostBreakdown from "./CostBreakdown";
@@ -22,6 +22,8 @@ interface DestinationCardProps {
   description: string;
   distance?: number;
   travelDuration?: string;
+  itinerary?: Array<{ day: number; activities: string[] }>;
+  budgetTips?: string[];
   savedTripId?: string;
   onDelete?: (id: string) => void;
 }
@@ -39,6 +41,8 @@ const DestinationCard = ({
   description,
   distance,
   travelDuration,
+  itinerary,
+  budgetTips,
   savedTripId,
   onDelete,
 }: DestinationCardProps) => {
@@ -164,6 +168,66 @@ const DestinationCard = ({
             ))}
           </div>
         </div>
+
+        {/* Itinerary & Budget Tips */}
+        {(itinerary || budgetTips) && (
+          <div className="grid grid-cols-2 gap-2 mt-4">
+            {itinerary && (
+              <Dialog>
+                <DialogTrigger asChild>
+                  <Button variant="outline" className="w-full">
+                    <Map className="w-4 h-4 mr-2" />
+                    Itinerary
+                  </Button>
+                </DialogTrigger>
+                <DialogContent className="max-w-2xl max-h-[80vh] overflow-y-auto">
+                  <DialogHeader>
+                    <DialogTitle>{name} - Day-by-Day Plan</DialogTitle>
+                  </DialogHeader>
+                  <div className="space-y-4">
+                    {itinerary.map((day) => (
+                      <div key={day.day} className="border-l-4 border-primary pl-4 py-2">
+                        <h3 className="font-semibold text-lg mb-2">Day {day.day}</h3>
+                        <ul className="space-y-1">
+                          {day.activities.map((activity, idx) => (
+                            <li key={idx} className="text-sm text-muted-foreground flex items-start gap-2">
+                              <span className="text-primary mt-1">•</span>
+                              <span>{activity}</span>
+                            </li>
+                          ))}
+                        </ul>
+                      </div>
+                    ))}
+                  </div>
+                </DialogContent>
+              </Dialog>
+            )}
+            
+            {budgetTips && (
+              <Dialog>
+                <DialogTrigger asChild>
+                  <Button variant="outline" className="w-full">
+                    <Lightbulb className="w-4 h-4 mr-2" />
+                    Save Money
+                  </Button>
+                </DialogTrigger>
+                <DialogContent className="max-w-lg">
+                  <DialogHeader>
+                    <DialogTitle>{name} - Budget Tips</DialogTitle>
+                  </DialogHeader>
+                  <div className="space-y-3">
+                    {budgetTips.map((tip, idx) => (
+                      <div key={idx} className="flex items-start gap-3 p-3 bg-muted/50 rounded-lg">
+                        <Lightbulb className="w-5 h-5 text-accent flex-shrink-0 mt-0.5" />
+                        <p className="text-sm">{tip}</p>
+                      </div>
+                    ))}
+                  </div>
+                </DialogContent>
+              </Dialog>
+            )}
+          </div>
+        )}
 
         {/* Action Buttons */}
         <div className="grid grid-cols-2 gap-2 mt-4">
