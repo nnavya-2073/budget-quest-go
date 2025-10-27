@@ -4,7 +4,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { MapPin, IndianRupee, Calendar, Star, Utensils, Heart, ExternalLink, Trash2, TrendingUp, Navigation, Map, Lightbulb } from "lucide-react";
+import { MapPin, IndianRupee, Calendar, Star, Utensils, Heart, ExternalLink, Trash2, TrendingUp, Navigation, Map, Lightbulb, CloudSun, CheckCircle2 } from "lucide-react";
 import { toast } from "sonner";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import CostBreakdown from "./CostBreakdown";
@@ -24,8 +24,13 @@ interface DestinationCardProps {
   travelDuration?: string;
   itinerary?: Array<{ day: number; activities: string[] }>;
   budgetTips?: string[];
+  weather?: { climate: string; avgTemp: string };
+  bestTime?: string;
   savedTripId?: string;
   onDelete?: (id: string) => void;
+  isCompareMode?: boolean;
+  isSelected?: boolean;
+  onToggleCompare?: () => void;
 }
 
 const DestinationCard = ({
@@ -43,8 +48,13 @@ const DestinationCard = ({
   travelDuration,
   itinerary,
   budgetTips,
+  weather,
+  bestTime,
   savedTripId,
   onDelete,
+  isCompareMode,
+  isSelected,
+  onToggleCompare,
 }: DestinationCardProps) => {
   const navigate = useNavigate();
   const [isSaving, setIsSaving] = useState(false);
@@ -95,7 +105,7 @@ const DestinationCard = ({
     window.open(`https://www.google.com/search?q=${searchQuery}`, "_blank");
   };
   return (
-    <Card className="overflow-hidden hover:shadow-[var(--shadow-card)] transition-all duration-300 hover:scale-[1.02] group">
+    <Card className={`overflow-hidden hover:shadow-[var(--shadow-card)] transition-all duration-300 hover:scale-[1.02] group ${isSelected ? 'ring-2 ring-primary' : ''}`}>
       {/* Image */}
       <div className="relative h-64 overflow-hidden">
         <img
@@ -106,9 +116,26 @@ const DestinationCard = ({
         <div className="absolute top-4 left-4">
           <Badge className="bg-primary/90 backdrop-blur-sm">{category}</Badge>
         </div>
-        <div className="absolute top-4 right-4 flex items-center gap-1 bg-background/90 backdrop-blur-sm px-2 py-1 rounded-md">
-          <Star className="w-4 h-4 fill-accent text-accent" />
-          <span className="text-sm font-semibold">{rating}</span>
+        <div className="absolute top-4 right-4 flex items-center gap-2">
+          <div className="flex items-center gap-1 bg-background/90 backdrop-blur-sm px-2 py-1 rounded-md">
+            <Star className="w-4 h-4 fill-accent text-accent" />
+            <span className="text-sm font-semibold">{rating}</span>
+          </div>
+          {isCompareMode && onToggleCompare && (
+            <button
+              onClick={(e) => {
+                e.stopPropagation();
+                onToggleCompare();
+              }}
+              className={`p-2 rounded-md transition-colors ${
+                isSelected 
+                  ? 'bg-primary text-primary-foreground' 
+                  : 'bg-background/90 backdrop-blur-sm hover:bg-primary/20'
+              }`}
+            >
+              <CheckCircle2 className="w-4 h-4" />
+            </button>
+          )}
         </div>
       </div>
 
@@ -153,6 +180,28 @@ const DestinationCard = ({
             </div>
           </div>
         </div>
+
+        {/* Weather & Best Time */}
+        {(weather || bestTime) && (
+          <div className="grid grid-cols-2 gap-4">
+            {weather && (
+              <div className="space-y-1">
+                <div className="flex items-center gap-2 text-sm font-semibold">
+                  <CloudSun className="w-4 h-4 text-orange-500" />
+                  Climate
+                </div>
+                <p className="text-xs text-muted-foreground">{weather.climate}</p>
+                <p className="text-xs text-muted-foreground">{weather.avgTemp}</p>
+              </div>
+            )}
+            {bestTime && (
+              <div className="space-y-1">
+                <div className="text-sm font-semibold">Best Time</div>
+                <p className="text-xs text-muted-foreground">{bestTime}</p>
+              </div>
+            )}
+          </div>
+        )}
 
         {/* Restaurants */}
         <div className="space-y-2">

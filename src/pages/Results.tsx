@@ -2,8 +2,10 @@ import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import Navigation from "@/components/Navigation";
 import DestinationCard from "@/components/DestinationCard";
+import CompareDestinations from "@/components/CompareDestinations";
+import MapView from "@/components/MapView";
 import { Button } from "@/components/ui/button";
-import { ArrowLeft, Loader2, SlidersHorizontal } from "lucide-react";
+import { ArrowLeft, Loader2, SlidersHorizontal, GitCompare, MapIcon } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 import mountainsImg from "@/assets/destination-mountains.jpg";
@@ -27,6 +29,9 @@ interface Destination {
   travelDuration?: string;
   itinerary?: Array<{ day: number; activities: string[] }>;
   budgetTips?: string[];
+  weather?: { climate: string; avgTemp: string };
+  bestTime?: string;
+  coordinates?: { lat: number; lng: number };
 }
 
 const Results = () => {
@@ -37,6 +42,9 @@ const Results = () => {
   const [preferences, setPreferences] = useState<any>(null);
   const [sortBy, setSortBy] = useState<string>("rating");
   const [filterCategory, setFilterCategory] = useState<string>("all");
+  const [compareMode, setCompareMode] = useState(false);
+  const [selectedForCompare, setSelectedForCompare] = useState<Destination[]>([]);
+  const [showMap, setShowMap] = useState(false);
 
   useEffect(() => {
     const prefsStr = sessionStorage.getItem('travelPreferences');
@@ -95,7 +103,10 @@ const Results = () => {
             { day: 1, activities: ["Arrival and check-in", "Explore Mall Road", "Visit Hadimba Temple", "Evening at Old Manali"] },
             { day: 2, activities: ["Solang Valley adventure sports", "Paragliding experience", "Cable car ride", "Dinner at Cafe 1947"] }
           ],
-          budgetTips: ["Book hotels in advance for better rates", "Use local buses instead of taxis", "Eat at local dhabas", "Visit during off-season for discounts"]
+          budgetTips: ["Book hotels in advance for better rates", "Use local buses instead of taxis", "Eat at local dhabas", "Visit during off-season for discounts"],
+          weather: { climate: "Cold Mountain Climate", avgTemp: "10°C - 25°C" },
+          bestTime: "March to June, September to November",
+          coordinates: { lat: 32.2432, lng: 77.1892 }
         },
         {
           city: "Panaji",
@@ -115,7 +126,10 @@ const Results = () => {
             { day: 2, activities: ["Water sports at Baga Beach", "Visit Fort Aguada", "Old Goa church tour", "Nightlife at Tito's Lane"] },
             { day: 3, activities: ["South Goa beaches", "Palolem Beach relaxation", "Cabo de Rama Fort", "Beachside seafood dinner"] }
           ],
-          budgetTips: ["Visit during monsoon for 50% cheaper rates", "Rent a scooter for affordable transport", "Stay in hostels or guesthouses", "Eat at beach shacks instead of fancy restaurants", "Book flight tickets in advance"]
+          budgetTips: ["Visit during monsoon for 50% cheaper rates", "Rent a scooter for affordable transport", "Stay in hostels or guesthouses", "Eat at beach shacks instead of fancy restaurants", "Book flight tickets in advance"],
+          weather: { climate: "Tropical Coastal", avgTemp: "25°C - 35°C" },
+          bestTime: "November to February",
+          coordinates: { lat: 15.2993, lng: 74.1240 }
         },
         {
           city: "Jaipur",
@@ -134,7 +148,10 @@ const Results = () => {
             { day: 1, activities: ["Amber Fort morning visit", "Elephant ride experience", "City Palace tour", "Evening at Hawa Mahal", "Shopping at Johari Bazaar"] },
             { day: 2, activities: ["Jantar Mantar Observatory", "Albert Hall Museum", "Nahargarh Fort sunset", "Traditional Rajasthani dinner"] }
           ],
-          budgetTips: ["Use metro and local buses", "Book combo tickets for forts", "Stay in budget hotels in C-Scheme area", "Eat at Laxmi Mishthan Bhandar for authentic cheap food", "Bargain in markets"]
+          budgetTips: ["Use metro and local buses", "Book combo tickets for forts", "Stay in budget hotels in C-Scheme area", "Eat at Laxmi Mishthan Bhandar for authentic cheap food", "Bargain in markets"],
+          weather: { climate: "Hot Semi-arid", avgTemp: "20°C - 40°C" },
+          bestTime: "October to March",
+          coordinates: { lat: 26.9124, lng: 75.7873 }
         },
       ]);
       setFilteredDestinations([
@@ -239,6 +256,20 @@ const Results = () => {
     return Array.from(cats);
   };
 
+  const toggleCompareSelection = (dest: Destination) => {
+    setSelectedForCompare(prev => {
+      const exists = prev.find(d => d.name === dest.name);
+      if (exists) {
+        return prev.filter(d => d.name !== dest.name);
+      }
+      if (prev.length >= 4) {
+        toast.error("You can compare up to 4 destinations");
+        return prev;
+      }
+      return [...prev, dest];
+    });
+  };
+
   return (
     <div className="min-h-screen bg-background">
       <Navigation />
@@ -309,12 +340,13 @@ const Results = () => {
               </div>
             )}
 
-            {/* Filters */}
-            <div className="flex flex-wrap gap-4 items-center mb-8 p-4 bg-muted/30 rounded-lg">
-              <div className="flex items-center gap-2">
-                <SlidersHorizontal className="w-5 h-5 text-muted-foreground" />
-                <span className="font-semibold">Filter & Sort:</span>
-              </div>
+            {/* Action Bar */}
+            <div className="flex flex-wrap gap-4 items-center justify-between mb-8 p-4 bg-muted/30 rounded-lg">
+              <div className="flex flex-wrap gap-4 items-center">
+                <div className="flex items-center gap-2">
+                  <SlidersHorizontal className="w-5 h-5 text-muted-foreground" />
+                  <span className="font-semibold">Filter & Sort:</span>
+                </div>
               
               <Select value={filterCategory} onValueChange={setFilterCategory}>
                 <SelectTrigger className="w-[180px]">
@@ -328,25 +360,68 @@ const Results = () => {
                 </SelectContent>
               </Select>
 
-              <Select value={sortBy} onValueChange={setSortBy}>
-                <SelectTrigger className="w-[180px]">
-                  <SelectValue placeholder="Sort by" />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="rating">Highest Rating</SelectItem>
-                  <SelectItem value="cost-low">Price: Low to High</SelectItem>
-                  <SelectItem value="cost-high">Price: High to Low</SelectItem>
-                </SelectContent>
-              </Select>
+                <Select value={sortBy} onValueChange={setSortBy}>
+                  <SelectTrigger className="w-[180px]">
+                    <SelectValue placeholder="Sort by" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="rating">Highest Rating</SelectItem>
+                    <SelectItem value="cost-low">Price: Low to High</SelectItem>
+                    <SelectItem value="cost-high">Price: High to Low</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
+
+              <div className="flex gap-2">
+                <Button
+                  variant={compareMode ? "default" : "outline"}
+                  onClick={() => {
+                    setCompareMode(!compareMode);
+                    if (compareMode) setSelectedForCompare([]);
+                  }}
+                >
+                  <GitCompare className="w-4 h-4 mr-2" />
+                  Compare {selectedForCompare.length > 0 && `(${selectedForCompare.length})`}
+                </Button>
+                
+                <Button
+                  variant="outline"
+                  onClick={() => setShowMap(true)}
+                >
+                  <MapIcon className="w-4 h-4 mr-2" />
+                  Map View
+                </Button>
+              </div>
             </div>
+
+            {selectedForCompare.length > 0 && (
+              <div className="mb-6 p-4 bg-primary/10 rounded-lg flex items-center justify-between">
+                <span className="text-sm font-semibold">
+                  {selectedForCompare.length} destination{selectedForCompare.length > 1 ? 's' : ''} selected for comparison
+                </span>
+                <Button
+                  size="sm"
+                  onClick={() => {
+                    if (selectedForCompare.length < 2) {
+                      toast.error("Select at least 2 destinations to compare");
+                      return;
+                    }
+                    setCompareMode(false);
+                  }}
+                >
+                  View Comparison
+                </Button>
+              </div>
+            )}
 
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
               {filteredDestinations.map((destination, index) => (
                 <DestinationCard 
                   key={index} 
                   {...destination}
-                  itinerary={destination.itinerary}
-                  budgetTips={destination.budgetTips}
+                  isCompareMode={compareMode}
+                  isSelected={selectedForCompare.some(d => d.name === destination.name)}
+                  onToggleCompare={() => toggleCompareSelection(destination)}
                 />
               ))}
             </div>
@@ -366,6 +441,21 @@ const Results = () => {
                 </p>
               </div>
             )}
+
+            <CompareDestinations 
+              open={!compareMode && selectedForCompare.length >= 2}
+              onOpenChange={(open) => {
+                if (!open) setSelectedForCompare([]);
+              }}
+              destinations={selectedForCompare}
+            />
+
+            <MapView
+              open={showMap}
+              onOpenChange={setShowMap}
+              destinations={filteredDestinations}
+              departureCity={preferences?.departureCity}
+            />
           </>
         )}
       </div>

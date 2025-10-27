@@ -39,6 +39,9 @@ serve(async (req) => {
     - Estimated travel duration from departure city (e.g., "2 hours by flight", "8 hours by train", "5 hours by car")
     - Day-by-day itinerary with 3-4 activities per day
     - 3-5 practical budget-saving tips specific to this destination
+    - Weather information: climate type and average temperature range
+    - Best time to visit (months)
+    - Coordinates (latitude and longitude) for map display
     
     Consider real travel costs including accommodation, food, local transport, and activities.
     ${travelModeText}.
@@ -55,7 +58,7 @@ serve(async (req) => {
     
     IMPORTANT: Recommend unexpected, offbeat, and lesser-known destinations! Think beyond typical tourist spots.
     Include hidden gems, unusual places, and destinations with unique experiences.
-    For each destination, include the distance, travel duration from ${departureCity}, a detailed day-by-day itinerary, and budget-saving tips.`
+    For each destination, include the distance, travel duration from ${departureCity}, a detailed day-by-day itinerary, budget-saving tips, weather info, best time to visit, and exact coordinates.`
       : `Find perfect travel destinations for:
     - Departure City: ${departureCity}
     - Budget: ₹${budget}
@@ -65,7 +68,7 @@ serve(async (req) => {
     - Travel Mode: ${travelMode === 'any' ? 'Optimize for best option' : travelMode}
     
     Return diverse destinations that match these criteria and provide a balanced mix of experiences.
-    For each destination, include the distance, travel duration from ${departureCity}, a detailed day-by-day itinerary, and budget-saving tips.`;
+    For each destination, include the distance, travel duration from ${departureCity}, a detailed day-by-day itinerary, budget-saving tips, weather info, best time to visit, and exact coordinates.`;
 
     const response = await fetch('https://ai.gateway.lovable.dev/v1/chat/completions', {
       method: 'POST',
@@ -127,9 +130,29 @@ serve(async (req) => {
                           type: 'array',
                           items: { type: 'string' },
                           description: 'Money-saving tips for this destination'
+                        },
+                        weather: {
+                          type: 'object',
+                          properties: {
+                            climate: { type: 'string', description: 'Climate type (e.g., Tropical, Temperate)' },
+                            avgTemp: { type: 'string', description: 'Average temperature range' }
+                          },
+                          description: 'Weather information'
+                        },
+                        bestTime: { 
+                          type: 'string', 
+                          description: 'Best months to visit (e.g., October-March)' 
+                        },
+                        coordinates: {
+                          type: 'object',
+                          properties: {
+                            lat: { type: 'number', description: 'Latitude' },
+                            lng: { type: 'number', description: 'Longitude' }
+                          },
+                          description: 'Geographic coordinates'
                         }
                       },
-                      required: ['city', 'name', 'state', 'category', 'cost', 'duration', 'rating', 'description', 'restaurants', 'distance', 'travelDuration', 'itinerary', 'budgetTips'],
+                      required: ['city', 'name', 'state', 'category', 'cost', 'duration', 'rating', 'description', 'restaurants', 'distance', 'travelDuration', 'itinerary', 'budgetTips', 'weather', 'bestTime', 'coordinates'],
                       additionalProperties: false
                     }
                   }
