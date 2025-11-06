@@ -130,10 +130,28 @@ const Results = () => {
           duration: `${prefs.duration} days`,
           rating: 4.7,
           image: mountainsImg,
-          restaurants: ["Johnson's Cafe", "The Lazy Dog", "Cafe 1947"],
+          restaurants: [
+            { name: "Johnson's Cafe", rating: 4.6, priceRange: "₹₹", cuisine: "Continental" },
+            { name: "The Lazy Dog", rating: 4.5, priceRange: "₹₹₹", cuisine: "Multi-cuisine" },
+            { name: "Cafe 1947", rating: 4.7, priceRange: "₹₹", cuisine: "Italian" }
+          ],
+          hotels: [
+            { name: "Snow Valley Resort", rating: 4.5, pricePerNight: 3500, amenities: ["Mountain View", "Heater", "WiFi", "Breakfast"], imageUrl: "https://images.unsplash.com/photo-1542314831-068cd1dbfeeb" },
+            { name: "Manali Heights", rating: 4.3, pricePerNight: 2500, amenities: ["Free Parking", "Restaurant", "Room Service"], imageUrl: "https://images.unsplash.com/photo-1566073771259-6a8506099945" }
+          ],
+          activities: [
+            { name: "Paragliding", description: "Soar over Solang Valley", rating: 4.8, cost: 2500, imageUrl: "https://images.unsplash.com/photo-1535581652167-8c362c5e90d2" },
+            { name: "River Rafting", description: "Beas River adventure", rating: 4.7, cost: 1500, imageUrl: "https://images.unsplash.com/photo-1564489971959-745a35a6e8ea" },
+            { name: "Trekking", description: "Himalayan trails", rating: 4.6, cost: 1000, imageUrl: "https://images.unsplash.com/photo-1551632811-561732d1e306" }
+          ],
           description: "A paradise for adventure seekers with stunning Himalayan landscapes, snow-capped peaks, and thrilling activities.",
           distance: 500,
           travelDuration: "12 hours by car",
+          travelOptions: [
+            { mode: "flight", duration: "1.5 hours", cost: 5000, details: "Delhi to Kullu, then 1 hour taxi" },
+            { mode: "bus", duration: "14 hours", cost: 1200, details: "Overnight Volvo from Delhi" },
+            { mode: "car", duration: "12 hours", cost: 3000, details: "Self-drive via NH44" }
+          ],
           itinerary: [
             { day: 1, activities: ["Arrival and check-in", "Explore Mall Road", "Visit Hadimba Temple", "Evening at Old Manali"] },
             { day: 2, activities: ["Solang Valley adventure sports", "Paragliding experience", "Cable car ride", "Dinner at Cafe 1947"] }
@@ -141,6 +159,7 @@ const Results = () => {
           budgetTips: ["Book hotels in advance for better rates", "Use local buses instead of taxis", "Eat at local dhabas", "Visit during off-season for discounts"],
           weather: { climate: "Cold Mountain Climate", avgTemp: "10°C - 25°C" },
           bestTime: "March to June, September to November",
+          seasonalPricing: "Peak: Apr-Jun (+35%), Off-season: Jan-Feb (-20%)",
           coordinates: { lat: 32.2432, lng: 77.1892 }
         },
         {
@@ -152,10 +171,28 @@ const Results = () => {
           duration: `${prefs.duration} days`,
           rating: 4.5,
           image: beachImg,
-          restaurants: ["Thalassa", "Pousada by the Beach", "Fisherman's Wharf"],
+          restaurants: [
+            { name: "Thalassa", rating: 4.8, priceRange: "₹₹₹", cuisine: "Greek" },
+            { name: "Pousada by the Beach", rating: 4.6, priceRange: "₹₹", cuisine: "Goan" },
+            { name: "Fisherman's Wharf", rating: 4.7, priceRange: "₹₹₹", cuisine: "Seafood" }
+          ],
+          hotels: [
+            { name: "Taj Exotica", rating: 4.9, pricePerNight: 8000, amenities: ["Beach Access", "Pool", "Spa", "Restaurant"], imageUrl: "https://images.unsplash.com/photo-1566073771259-6a8506099945" },
+            { name: "Casa Palacio", rating: 4.4, pricePerNight: 3500, amenities: ["Pool", "WiFi", "Breakfast", "Parking"], imageUrl: "https://images.unsplash.com/photo-1542314831-068cd1dbfeeb" }
+          ],
+          activities: [
+            { name: "Water Sports", description: "Jet ski, parasailing, banana boat", rating: 4.7, cost: 2000, imageUrl: "https://images.unsplash.com/photo-1535581652167-8c362c5e90d2" },
+            { name: "Scuba Diving", description: "Explore underwater life", rating: 4.8, cost: 3500, imageUrl: "https://images.unsplash.com/photo-1544551763-46a013bb70d5" },
+            { name: "Sunset Cruise", description: "Evening cruise on Mandovi", rating: 4.6, cost: 1200, imageUrl: "https://images.unsplash.com/photo-1544551763-92ab472180c5" }
+          ],
           description: "Sun, sand, and sea! Perfect blend of beach relaxation, vibrant nightlife, and Portuguese heritage.",
           distance: 600,
           travelDuration: "1.5 hours by flight",
+          travelOptions: [
+            { mode: "flight", duration: "1.5 hours", cost: 4500, details: "Direct flights from major cities" },
+            { mode: "train", duration: "12 hours", cost: 1800, details: "Overnight express trains available" },
+            { mode: "bus", duration: "16 hours", cost: 1500, details: "Luxury sleeper buses" }
+          ],
           itinerary: [
             { day: 1, activities: ["Arrival at Goa airport", "Check-in to beach resort", "Calangute Beach sunset", "Beach shack dinner"] },
             { day: 2, activities: ["Water sports at Baga Beach", "Visit Fort Aguada", "Old Goa church tour", "Nightlife at Tito's Lane"] },
@@ -164,6 +201,7 @@ const Results = () => {
           budgetTips: ["Visit during monsoon for 50% cheaper rates", "Rent a scooter for affordable transport", "Stay in hostels or guesthouses", "Eat at beach shacks instead of fancy restaurants", "Book flight tickets in advance"],
           weather: { climate: "Tropical Coastal", avgTemp: "25°C - 35°C" },
           bestTime: "November to February",
+          seasonalPricing: "Peak: Dec-Jan (+40%), Off-season: Jun-Aug (-30%)",
           coordinates: { lat: 15.2993, lng: 74.1240 }
         },
         {
@@ -175,10 +213,28 @@ const Results = () => {
           duration: `${prefs.duration} days`,
           rating: 4.6,
           image: cultureImg,
-          restaurants: ["Laxmi Mishthan Bhandar", "Peacock Rooftop", "Handi Restaurant"],
+          restaurants: [
+            { name: "Laxmi Mishthan Bhandar", rating: 4.7, priceRange: "₹", cuisine: "Traditional Rajasthani" },
+            { name: "Peacock Rooftop", rating: 4.5, priceRange: "₹₹", cuisine: "Indian" },
+            { name: "Handi Restaurant", rating: 4.6, priceRange: "₹₹", cuisine: "Mughlai" }
+          ],
+          hotels: [
+            { name: "Raj Palace", rating: 4.7, pricePerNight: 4500, amenities: ["Heritage Property", "Pool", "Cultural Shows", "Restaurant"], imageUrl: "https://images.unsplash.com/photo-1542314831-068cd1dbfeeb" },
+            { name: "Hotel Pearl Palace", rating: 4.4, pricePerNight: 2000, amenities: ["Rooftop", "WiFi", "Breakfast", "Travel Desk"], imageUrl: "https://images.unsplash.com/photo-1566073771259-6a8506099945" }
+          ],
+          activities: [
+            { name: "Amber Fort Tour", description: "Explore majestic fort", rating: 4.8, cost: 1500, imageUrl: "https://images.unsplash.com/photo-1524850011238-e3d235c7d4c9" },
+            { name: "Elephant Ride", description: "Traditional fort entry", rating: 4.5, cost: 1200, imageUrl: "https://images.unsplash.com/photo-1564760055775-d63b17a55c44" },
+            { name: "City Palace Visit", description: "Royal heritage tour", rating: 4.7, cost: 800, imageUrl: "https://images.unsplash.com/photo-1599661046289-e31897846e41" }
+          ],
           description: "The Pink City showcases magnificent forts, palaces, and rich Rajasthani culture and cuisine.",
           distance: 400,
           travelDuration: "1 hour by flight",
+          travelOptions: [
+            { mode: "flight", duration: "1 hour", cost: 3500, details: "Frequent flights from Delhi/Mumbai" },
+            { mode: "train", duration: "5 hours", cost: 800, details: "Shatabdi Express from Delhi" },
+            { mode: "car", duration: "5 hours", cost: 2500, details: "Highway via NH48" }
+          ],
           itinerary: [
             { day: 1, activities: ["Amber Fort morning visit", "Elephant ride experience", "City Palace tour", "Evening at Hawa Mahal", "Shopping at Johari Bazaar"] },
             { day: 2, activities: ["Jantar Mantar Observatory", "Albert Hall Museum", "Nahargarh Fort sunset", "Traditional Rajasthani dinner"] }
@@ -186,6 +242,7 @@ const Results = () => {
           budgetTips: ["Use metro and local buses", "Book combo tickets for forts", "Stay in budget hotels in C-Scheme area", "Eat at Laxmi Mishthan Bhandar for authentic cheap food", "Bargain in markets"],
           weather: { climate: "Hot Semi-arid", avgTemp: "20°C - 40°C" },
           bestTime: "October to March",
+          seasonalPricing: "Peak: Oct-Mar (+25%), Off-season: Apr-Jun (-15%)",
           coordinates: { lat: 26.9124, lng: 75.7873 }
         },
       ]);
@@ -199,15 +256,37 @@ const Results = () => {
           duration: `${prefs.duration} days`,
           rating: 4.7,
           image: mountainsImg,
-          restaurants: ["Johnson's Cafe", "The Lazy Dog", "Cafe 1947"],
+          restaurants: [
+            { name: "Johnson's Cafe", rating: 4.6, priceRange: "₹₹", cuisine: "Continental" },
+            { name: "The Lazy Dog", rating: 4.5, priceRange: "₹₹₹", cuisine: "Multi-cuisine" },
+            { name: "Cafe 1947", rating: 4.7, priceRange: "₹₹", cuisine: "Italian" }
+          ],
+          hotels: [
+            { name: "Snow Valley Resort", rating: 4.5, pricePerNight: 3500, amenities: ["Mountain View", "Heater", "WiFi", "Breakfast"], imageUrl: "https://images.unsplash.com/photo-1542314831-068cd1dbfeeb" },
+            { name: "Manali Heights", rating: 4.3, pricePerNight: 2500, amenities: ["Free Parking", "Restaurant", "Room Service"], imageUrl: "https://images.unsplash.com/photo-1566073771259-6a8506099945" }
+          ],
+          activities: [
+            { name: "Paragliding", description: "Soar over Solang Valley", rating: 4.8, cost: 2500, imageUrl: "https://images.unsplash.com/photo-1535581652167-8c362c5e90d2" },
+            { name: "River Rafting", description: "Beas River adventure", rating: 4.7, cost: 1500, imageUrl: "https://images.unsplash.com/photo-1564489971959-745a35a6e8ea" },
+            { name: "Trekking", description: "Himalayan trails", rating: 4.6, cost: 1000, imageUrl: "https://images.unsplash.com/photo-1551632811-561732d1e306" }
+          ],
           description: "A paradise for adventure seekers with stunning Himalayan landscapes, snow-capped peaks, and thrilling activities.",
           distance: 500,
           travelDuration: "12 hours by car",
+          travelOptions: [
+            { mode: "flight", duration: "1.5 hours", cost: 5000, details: "Delhi to Kullu, then 1 hour taxi" },
+            { mode: "bus", duration: "14 hours", cost: 1200, details: "Overnight Volvo from Delhi" },
+            { mode: "car", duration: "12 hours", cost: 3000, details: "Self-drive via NH44" }
+          ],
           itinerary: [
             { day: 1, activities: ["Arrival and check-in", "Explore Mall Road", "Visit Hadimba Temple", "Evening at Old Manali"] },
             { day: 2, activities: ["Solang Valley adventure sports", "Paragliding experience", "Cable car ride", "Dinner at Cafe 1947"] }
           ],
-          budgetTips: ["Book hotels in advance for better rates", "Use local buses instead of taxis", "Eat at local dhabas", "Visit during off-season for discounts"]
+          budgetTips: ["Book hotels in advance for better rates", "Use local buses instead of taxis", "Eat at local dhabas", "Visit during off-season for discounts"],
+          weather: { climate: "Cold Mountain Climate", avgTemp: "10°C - 25°C" },
+          bestTime: "March to June, September to November",
+          seasonalPricing: "Peak: Apr-Jun (+35%), Off-season: Jan-Feb (-20%)",
+          coordinates: { lat: 32.2432, lng: 77.1892 }
         },
         {
           city: "Panaji",
@@ -218,16 +297,38 @@ const Results = () => {
           duration: `${prefs.duration} days`,
           rating: 4.5,
           image: beachImg,
-          restaurants: ["Thalassa", "Pousada by the Beach", "Fisherman's Wharf"],
+          restaurants: [
+            { name: "Thalassa", rating: 4.8, priceRange: "₹₹₹", cuisine: "Greek" },
+            { name: "Pousada by the Beach", rating: 4.6, priceRange: "₹₹", cuisine: "Goan" },
+            { name: "Fisherman's Wharf", rating: 4.7, priceRange: "₹₹₹", cuisine: "Seafood" }
+          ],
+          hotels: [
+            { name: "Taj Exotica", rating: 4.9, pricePerNight: 8000, amenities: ["Beach Access", "Pool", "Spa", "Restaurant"], imageUrl: "https://images.unsplash.com/photo-1566073771259-6a8506099945" },
+            { name: "Casa Palacio", rating: 4.4, pricePerNight: 3500, amenities: ["Pool", "WiFi", "Breakfast", "Parking"], imageUrl: "https://images.unsplash.com/photo-1542314831-068cd1dbfeeb" }
+          ],
+          activities: [
+            { name: "Water Sports", description: "Jet ski, parasailing, banana boat", rating: 4.7, cost: 2000, imageUrl: "https://images.unsplash.com/photo-1535581652167-8c362c5e90d2" },
+            { name: "Scuba Diving", description: "Explore underwater life", rating: 4.8, cost: 3500, imageUrl: "https://images.unsplash.com/photo-1544551763-46a013bb70d5" },
+            { name: "Sunset Cruise", description: "Evening cruise on Mandovi", rating: 4.6, cost: 1200, imageUrl: "https://images.unsplash.com/photo-1544551763-92ab472180c5" }
+          ],
           description: "Sun, sand, and sea! Perfect blend of beach relaxation, vibrant nightlife, and Portuguese heritage.",
           distance: 600,
           travelDuration: "1.5 hours by flight",
+          travelOptions: [
+            { mode: "flight", duration: "1.5 hours", cost: 4500, details: "Direct flights from major cities" },
+            { mode: "train", duration: "12 hours", cost: 1800, details: "Overnight express trains available" },
+            { mode: "bus", duration: "16 hours", cost: 1500, details: "Luxury sleeper buses" }
+          ],
           itinerary: [
             { day: 1, activities: ["Arrival at Goa airport", "Check-in to beach resort", "Calangute Beach sunset", "Beach shack dinner"] },
             { day: 2, activities: ["Water sports at Baga Beach", "Visit Fort Aguada", "Old Goa church tour", "Nightlife at Tito's Lane"] },
             { day: 3, activities: ["South Goa beaches", "Palolem Beach relaxation", "Cabo de Rama Fort", "Beachside seafood dinner"] }
           ],
-          budgetTips: ["Visit during monsoon for 50% cheaper rates", "Rent a scooter for affordable transport", "Stay in hostels or guesthouses", "Eat at beach shacks instead of fancy restaurants", "Book flight tickets in advance"]
+          budgetTips: ["Visit during monsoon for 50% cheaper rates", "Rent a scooter for affordable transport", "Stay in hostels or guesthouses", "Eat at beach shacks instead of fancy restaurants", "Book flight tickets in advance"],
+          weather: { climate: "Tropical Coastal", avgTemp: "25°C - 35°C" },
+          bestTime: "November to February",
+          seasonalPricing: "Peak: Dec-Jan (+40%), Off-season: Jun-Aug (-30%)",
+          coordinates: { lat: 15.2993, lng: 74.1240 }
         },
         {
           city: "Jaipur",
@@ -238,15 +339,37 @@ const Results = () => {
           duration: `${prefs.duration} days`,
           rating: 4.6,
           image: cultureImg,
-          restaurants: ["Laxmi Mishthan Bhandar", "Peacock Rooftop", "Handi Restaurant"],
+          restaurants: [
+            { name: "Laxmi Mishthan Bhandar", rating: 4.7, priceRange: "₹", cuisine: "Traditional Rajasthani" },
+            { name: "Peacock Rooftop", rating: 4.5, priceRange: "₹₹", cuisine: "Indian" },
+            { name: "Handi Restaurant", rating: 4.6, priceRange: "₹₹", cuisine: "Mughlai" }
+          ],
+          hotels: [
+            { name: "Raj Palace", rating: 4.7, pricePerNight: 4500, amenities: ["Heritage Property", "Pool", "Cultural Shows", "Restaurant"], imageUrl: "https://images.unsplash.com/photo-1542314831-068cd1dbfeeb" },
+            { name: "Hotel Pearl Palace", rating: 4.4, pricePerNight: 2000, amenities: ["Rooftop", "WiFi", "Breakfast", "Travel Desk"], imageUrl: "https://images.unsplash.com/photo-1566073771259-6a8506099945" }
+          ],
+          activities: [
+            { name: "Amber Fort Tour", description: "Explore majestic fort", rating: 4.8, cost: 1500, imageUrl: "https://images.unsplash.com/photo-1524850011238-e3d235c7d4c9" },
+            { name: "Elephant Ride", description: "Traditional fort entry", rating: 4.5, cost: 1200, imageUrl: "https://images.unsplash.com/photo-1564760055775-d63b17a55c44" },
+            { name: "City Palace Visit", description: "Royal heritage tour", rating: 4.7, cost: 800, imageUrl: "https://images.unsplash.com/photo-1599661046289-e31897846e41" }
+          ],
           description: "The Pink City showcases magnificent forts, palaces, and rich Rajasthani culture and cuisine.",
           distance: 400,
           travelDuration: "1 hour by flight",
+          travelOptions: [
+            { mode: "flight", duration: "1 hour", cost: 3500, details: "Frequent flights from Delhi/Mumbai" },
+            { mode: "train", duration: "5 hours", cost: 800, details: "Shatabdi Express from Delhi" },
+            { mode: "car", duration: "5 hours", cost: 2500, details: "Highway via NH48" }
+          ],
           itinerary: [
             { day: 1, activities: ["Amber Fort morning visit", "Elephant ride experience", "City Palace tour", "Evening at Hawa Mahal", "Shopping at Johari Bazaar"] },
             { day: 2, activities: ["Jantar Mantar Observatory", "Albert Hall Museum", "Nahargarh Fort sunset", "Traditional Rajasthani dinner"] }
           ],
-          budgetTips: ["Use metro and local buses", "Book combo tickets for forts", "Stay in budget hotels in C-Scheme area", "Eat at Laxmi Mishthan Bhandar for authentic cheap food", "Bargain in markets"]
+          budgetTips: ["Use metro and local buses", "Book combo tickets for forts", "Stay in budget hotels in C-Scheme area", "Eat at Laxmi Mishthan Bhandar for authentic cheap food", "Bargain in markets"],
+          weather: { climate: "Hot Semi-arid", avgTemp: "20°C - 40°C" },
+          bestTime: "October to March",
+          seasonalPricing: "Peak: Oct-Mar (+25%), Off-season: Apr-Jun (-15%)",
+          coordinates: { lat: 26.9124, lng: 75.7873 }
         },
       ]);
     } finally {
@@ -457,6 +580,7 @@ const Results = () => {
                   isCompareMode={compareMode}
                   isSelected={selectedForCompare.some(d => d.name === destination.name)}
                   onToggleCompare={() => toggleCompareSelection(destination)}
+                  fullDestination={destination}
                 />
               ))}
             </div>
