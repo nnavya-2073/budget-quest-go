@@ -14,6 +14,36 @@ import beachImg from "@/assets/destination-beach.jpg";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 
+interface Restaurant {
+  name: string;
+  rating: number;
+  priceRange: string;
+  cuisine: string;
+}
+
+interface HotelDetails {
+  name: string;
+  rating: number;
+  pricePerNight: number;
+  amenities: string[];
+  imageUrl: string;
+}
+
+interface Activity {
+  name: string;
+  description: string;
+  rating: number;
+  cost: number;
+  imageUrl: string;
+}
+
+interface TravelOption {
+  mode: string;
+  duration: string;
+  cost: number;
+  details: string;
+}
+
 interface Destination {
   city: string;
   name: string;
@@ -23,14 +53,19 @@ interface Destination {
   duration: string;
   rating: number;
   image: string;
-  restaurants: string[];
+  imageUrl?: string;
+  restaurants: (Restaurant | string)[];
+  hotels?: HotelDetails[];
+  activities?: Activity[];
   description: string;
   distance?: number;
   travelDuration?: string;
+  travelOptions?: TravelOption[];
   itinerary?: Array<{ day: number; activities: string[] }>;
   budgetTips?: string[];
   weather?: { climate: string; avgTemp: string };
   bestTime?: string;
+  seasonalPricing?: string;
   coordinates?: { lat: number; lng: number };
 }
 

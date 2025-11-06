@@ -18,7 +18,7 @@ interface DestinationCardProps {
   duration: string;
   rating: number;
   image: string;
-  restaurants: string[];
+  restaurants: any[];
   description: string;
   distance?: number;
   travelDuration?: string;
@@ -31,6 +31,7 @@ interface DestinationCardProps {
   isCompareMode?: boolean;
   isSelected?: boolean;
   onToggleCompare?: () => void;
+  fullDestination?: any;
 }
 
 const DestinationCard = ({
@@ -55,6 +56,7 @@ const DestinationCard = ({
   isCompareMode,
   isSelected,
   onToggleCompare,
+  fullDestination,
 }: DestinationCardProps) => {
   const navigate = useNavigate();
   const [isSaving, setIsSaving] = useState(false);
@@ -104,8 +106,20 @@ const DestinationCard = ({
     const searchQuery = encodeURIComponent(`${name} ${state} travel booking`);
     window.open(`https://www.google.com/search?q=${searchQuery}`, "_blank");
   };
+
+  const handleCardClick = () => {
+    if (!isCompareMode && fullDestination) {
+      navigate(`/destination/${encodeURIComponent(name)}`, { 
+        state: { destination: fullDestination } 
+      });
+    }
+  };
+
   return (
-    <Card className={`overflow-hidden hover:shadow-[var(--shadow-card)] transition-all duration-300 hover:scale-[1.02] group ${isSelected ? 'ring-2 ring-primary' : ''}`}>
+    <Card 
+      className={`overflow-hidden hover:shadow-[var(--shadow-card)] transition-all duration-300 hover:scale-[1.02] group ${isSelected ? 'ring-2 ring-primary' : ''} ${!isCompareMode ? 'cursor-pointer' : ''}`}
+      onClick={handleCardClick}
+    >
       {/* Image */}
       <div className="relative h-64 overflow-hidden">
         <img
@@ -212,7 +226,7 @@ const DestinationCard = ({
           <div className="flex flex-wrap gap-2">
             {restaurants.slice(0, 3).map((restaurant, index) => (
               <Badge key={index} variant="outline" className="text-xs">
-                {restaurant}
+                {typeof restaurant === 'string' ? restaurant : restaurant.name}
               </Badge>
             ))}
           </div>

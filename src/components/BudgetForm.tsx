@@ -17,6 +17,7 @@ const BudgetForm = () => {
   const [mood, setMood] = useState("");
   const [cuisine, setCuisine] = useState("");
   const [departureCity, setDepartureCity] = useState("");
+  const [destinationCity, setDestinationCity] = useState("");
   const [surpriseMe, setSurpriseMe] = useState(false);
   const [travelMode, setTravelMode] = useState("any");
 
@@ -40,6 +41,7 @@ const BudgetForm = () => {
       mood: surpriseMe ? "surprise" : mood,
       cuisine: surpriseMe ? "surprise" : cuisine,
       departureCity,
+      destinationCity,
       surpriseMe,
       travelMode,
     };
@@ -111,6 +113,21 @@ const BudgetForm = () => {
                   placeholder="e.g., Mumbai, Delhi, Bangalore"
                   value={departureCity}
                   onChange={(e) => setDepartureCity(e.target.value)}
+                  className="text-base"
+                />
+              </div>
+
+              {/* Destination City */}
+              <div className="space-y-2">
+                <Label htmlFor="destinationCity" className="text-base font-semibold">
+                  Destination City (Optional)
+                </Label>
+                <Input
+                  id="destinationCity"
+                  type="text"
+                  placeholder="e.g., Goa, Jaipur, Manali"
+                  value={destinationCity}
+                  onChange={(e) => setDestinationCity(e.target.value)}
                   className="text-base"
                 />
               </div>

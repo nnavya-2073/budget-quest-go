@@ -11,14 +11,14 @@ serve(async (req) => {
   }
 
   try {
-    const { budget, duration, mood, cuisine, departureCity, surpriseMe, travelMode } = await req.json();
+    const { budget, duration, mood, cuisine, departureCity, destinationCity, surpriseMe, travelMode } = await req.json();
     const LOVABLE_API_KEY = Deno.env.get('LOVABLE_API_KEY');
 
     if (!LOVABLE_API_KEY) {
       throw new Error('LOVABLE_API_KEY is not configured');
     }
 
-    console.log('Generating recommendations for:', { budget, duration, mood, cuisine, departureCity, surpriseMe, travelMode });
+    console.log('Generating recommendations for:', { budget, duration, mood, cuisine, departureCity, destinationCity, surpriseMe, travelMode });
 
     // Create detailed prompt for AI
     const travelModeText = travelMode === 'any' ? 'Consider the best travel mode (flight/train/car) for each destination' : `User prefers traveling by ${travelMode}`;
@@ -34,13 +34,18 @@ serve(async (req) => {
     - Trip duration
     - Rating (4.0-5.0)
     - Brief description (1-2 sentences)
-    - Top 3-5 restaurant recommendations
+    - Image URL (use a realistic placeholder or describe the place for image generation)
+    - Top 5 restaurant recommendations with ratings (4.0-5.0) and price range
+    - Top 5 hotel recommendations with ratings (3.5-5.0), price per night, and amenities
+    - Top 10 activities with descriptions, ratings (4.0-5.0), and estimated costs
     - Approximate distance from departure city in kilometers
     - Estimated travel duration from departure city (e.g., "2 hours by flight", "8 hours by train", "5 hours by car")
+    - Travel options: detailed flight/train/bus/car options with estimated costs and duration for each mode
     - Day-by-day itinerary with 3-4 activities per day
     - 3-5 practical budget-saving tips specific to this destination
     - Weather information: climate type and average temperature range
     - Best time to visit (months)
+    - Seasonal pricing variations (e.g., "Peak season: Dec-Feb (+30%), Off-season: Jun-Aug (-20%)")
     - Coordinates (latitude and longitude) for map display
     
     Consider real travel costs including accommodation, food, local transport, and activities.
@@ -49,18 +54,22 @@ serve(async (req) => {
     Make cost estimates realistic for Indian travel.
     Calculate realistic distances and travel times between Indian cities.`;
 
+    const destinationFilter = destinationCity ? `- Preferred Destination: ${destinationCity} (prioritize this if it matches criteria)` : '';
+    
     const userPrompt = surpriseMe 
       ? `Find RANDOM and SURPRISING travel destinations for an adventurous traveler:
     - Departure City: ${departureCity}
+    ${destinationFilter}
     - Budget: ₹${budget}
     - Duration: ${duration}
     - Travel Mode: ${travelMode === 'any' ? 'Optimize for best option' : travelMode}
     
     IMPORTANT: Recommend unexpected, offbeat, and lesser-known destinations! Think beyond typical tourist spots.
     Include hidden gems, unusual places, and destinations with unique experiences.
-    For each destination, include the distance, travel duration from ${departureCity}, a detailed day-by-day itinerary, budget-saving tips, weather info, best time to visit, and exact coordinates.`
+    For each destination, include hotels, restaurants, activities (all with ratings and reviews), travel options, seasonal pricing, a detailed day-by-day itinerary, budget-saving tips, weather info, best time to visit, and exact coordinates.`
       : `Find perfect travel destinations for:
     - Departure City: ${departureCity}
+    ${destinationFilter}
     - Budget: ₹${budget}
     - Duration: ${duration}
     - Mood: ${mood}
@@ -68,7 +77,7 @@ serve(async (req) => {
     - Travel Mode: ${travelMode === 'any' ? 'Optimize for best option' : travelMode}
     
     Return diverse destinations that match these criteria and provide a balanced mix of experiences.
-    For each destination, include the distance, travel duration from ${departureCity}, a detailed day-by-day itinerary, budget-saving tips, weather info, best time to visit, and exact coordinates.`;
+    For each destination, include top hotels, restaurants, activities (all with ratings, reviews, and prices), detailed travel options (flight/train/bus/car with costs), seasonal pricing variations, a detailed day-by-day itinerary, budget-saving tips, weather info, best time to visit, and exact coordinates.`;
 
     const response = await fetch('https://ai.gateway.lovable.dev/v1/chat/completions', {
       method: 'POST',
@@ -104,13 +113,63 @@ serve(async (req) => {
                         duration: { type: 'string', description: 'Recommended trip duration' },
                         rating: { type: 'number', description: 'Rating out of 5' },
                         description: { type: 'string', description: 'Brief compelling description' },
+                        imageUrl: { type: 'string', description: 'Image URL or description for the destination' },
                         restaurants: {
                           type: 'array',
-                          items: { type: 'string' },
-                          description: 'Top restaurant names'
+                          items: {
+                            type: 'object',
+                            properties: {
+                              name: { type: 'string' },
+                              rating: { type: 'number' },
+                              priceRange: { type: 'string', description: 'e.g., ₹₹ or ₹₹₹' },
+                              cuisine: { type: 'string' }
+                            }
+                          },
+                          description: 'Top 5 restaurants with ratings'
+                        },
+                        hotels: {
+                          type: 'array',
+                          items: {
+                            type: 'object',
+                            properties: {
+                              name: { type: 'string' },
+                              rating: { type: 'number' },
+                              pricePerNight: { type: 'number' },
+                              amenities: { type: 'array', items: { type: 'string' } },
+                              imageUrl: { type: 'string' }
+                            }
+                          },
+                          description: 'Top 5 hotels with details'
+                        },
+                        activities: {
+                          type: 'array',
+                          items: {
+                            type: 'object',
+                            properties: {
+                              name: { type: 'string' },
+                              description: { type: 'string' },
+                              rating: { type: 'number' },
+                              cost: { type: 'number' },
+                              imageUrl: { type: 'string' }
+                            }
+                          },
+                          description: 'Top 10 activities with details'
                         },
                         distance: { type: 'number', description: 'Distance from departure city in kilometers' },
                         travelDuration: { type: 'string', description: 'Estimated travel time from departure city' },
+                        travelOptions: {
+                          type: 'array',
+                          items: {
+                            type: 'object',
+                            properties: {
+                              mode: { type: 'string', description: 'flight, train, bus, or car' },
+                              duration: { type: 'string' },
+                              cost: { type: 'number' },
+                              details: { type: 'string' }
+                            }
+                          },
+                          description: 'Detailed travel options with costs'
+                        },
                         itinerary: {
                           type: 'array',
                           items: {
@@ -143,6 +202,10 @@ serve(async (req) => {
                           type: 'string', 
                           description: 'Best months to visit (e.g., October-March)' 
                         },
+                        seasonalPricing: { 
+                          type: 'string', 
+                          description: 'Price variations by season (e.g., Peak: +30%, Off-season: -20%)' 
+                        },
                         coordinates: {
                           type: 'object',
                           properties: {
@@ -152,7 +215,7 @@ serve(async (req) => {
                           description: 'Geographic coordinates'
                         }
                       },
-                      required: ['city', 'name', 'state', 'category', 'cost', 'duration', 'rating', 'description', 'restaurants', 'distance', 'travelDuration', 'itinerary', 'budgetTips', 'weather', 'bestTime', 'coordinates'],
+                      required: ['city', 'name', 'state', 'category', 'cost', 'duration', 'rating', 'description', 'imageUrl', 'restaurants', 'hotels', 'activities', 'distance', 'travelDuration', 'travelOptions', 'itinerary', 'budgetTips', 'weather', 'bestTime', 'seasonalPricing', 'coordinates'],
                       additionalProperties: false
                     }
                   }
