@@ -8,6 +8,9 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { ArrowLeft, Star, IndianRupee, MapPin, Calendar, CloudSun, Utensils, Hotel, Sparkles, Navigation as NavigationIcon, TrendingUp, Plane, Train, Bus, Car, ExternalLink, Map as MapIcon } from "lucide-react";
 import CostBreakdown from "@/components/CostBreakdown";
 import MapView from "@/components/MapView";
+import { CurrencyConverter } from "@/components/CurrencyConverter";
+import { VisaChecker } from "@/components/VisaChecker";
+import { FlightPriceTracker } from "@/components/FlightPriceTracker";
 
 interface Restaurant {
   name: string;
@@ -541,6 +544,16 @@ const DestinationDetail = () => {
             </div>
           </TabsContent>
         </Tabs>
+
+        {/* Travel Tools Section */}
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mt-8">
+          <CurrencyConverter />
+          <VisaChecker destination={`${destination.city}, ${destination.state}`} />
+          <FlightPriceTracker 
+            destination={`${destination.city}, ${destination.state}`}
+            departureCity="Your City"
+          />
+        </div>
       </div>
     </div>
   );

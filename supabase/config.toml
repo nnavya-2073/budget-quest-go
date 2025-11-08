@@ -2,3 +2,12 @@ project_id = "qpzekoidkdjtxsnfkdyj"
 
 [functions.travel-recommendations]
 verify_jwt = false
+
+[functions.currency-convert]
+verify_jwt = false
+
+[functions.visa-checker]
+verify_jwt = false
+
+[functions.flight-price-tracker]
+verify_jwt = false
