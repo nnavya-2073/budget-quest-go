@@ -1,11 +1,13 @@
 import { useLocation, useNavigate } from "react-router-dom";
+import { useState } from "react";
 import Navigation from "@/components/Navigation";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { ArrowLeft, Star, IndianRupee, MapPin, Calendar, CloudSun, Utensils, Hotel, Sparkles, Navigation as NavigationIcon, TrendingUp } from "lucide-react";
+import { ArrowLeft, Star, IndianRupee, MapPin, Calendar, CloudSun, Utensils, Hotel, Sparkles, Navigation as NavigationIcon, TrendingUp, Plane, Train, Bus, Car, ExternalLink, Map as MapIcon } from "lucide-react";
 import CostBreakdown from "@/components/CostBreakdown";
+import MapView from "@/components/MapView";
 
 interface Restaurant {
   name: string;
@@ -66,6 +68,32 @@ const DestinationDetail = () => {
   const location = useLocation();
   const navigate = useNavigate();
   const destination = location.state?.destination as Destination;
+  const [showMap, setShowMap] = useState(false);
+
+  const handleBooking = (type: string, searchQuery: string) => {
+    let url = "";
+    switch (type) {
+      case "flight":
+        url = `https://www.google.com/travel/flights?q=flights+to+${encodeURIComponent(searchQuery)}`;
+        break;
+      case "train":
+        url = `https://www.irctc.co.in/nget/train-search`;
+        break;
+      case "bus":
+        url = `https://www.redbus.in/`;
+        break;
+      case "car":
+        url = `https://www.google.com/search?q=car+rental+${encodeURIComponent(searchQuery)}`;
+        break;
+      case "hotel":
+        url = `https://www.google.com/travel/hotels?q=hotels+in+${encodeURIComponent(searchQuery)}`;
+        break;
+      case "restaurant":
+        url = `https://www.google.com/maps/search/${encodeURIComponent(searchQuery)}`;
+        break;
+    }
+    window.open(url, "_blank");
+  };
 
   if (!destination) {
     return (
@@ -190,6 +218,34 @@ const DestinationDetail = () => {
           </CardContent>
         </Card>
 
+        {/* Map Section */}
+        <Card className="mb-8">
+          <CardHeader>
+            <CardTitle className="flex items-center gap-2">
+              <MapIcon className="w-5 h-5" />
+              Location Map
+            </CardTitle>
+          </CardHeader>
+          <CardContent>
+            <Button onClick={() => setShowMap(true)} className="w-full">
+              <MapIcon className="w-4 h-4 mr-2" />
+              View on Map
+            </Button>
+          </CardContent>
+        </Card>
+
+        <MapView 
+          open={showMap}
+          onOpenChange={setShowMap}
+          destinations={[{
+            name: destination.name,
+            coordinates: destination.coordinates,
+            cost: destination.cost,
+            category: destination.category
+          }]}
+          departureCity={destination.city}
+        />
+
         {/* Main Tabs */}
         <Tabs defaultValue="travel" className="mb-8">
           <TabsList className="grid w-full grid-cols-6">
@@ -221,7 +277,19 @@ const DestinationDetail = () => {
                             <Badge variant="outline">₹{option.cost.toLocaleString('en-IN')}</Badge>
                           </div>
                           <p className="text-sm text-muted-foreground mb-2">Duration: {option.duration}</p>
-                          <p className="text-sm">{option.details}</p>
+                          <p className="text-sm mb-4">{option.details}</p>
+                          <Button 
+                            onClick={() => handleBooking(option.mode.toLowerCase(), `${destination.city} to ${destination.name}`)}
+                            className="w-full"
+                            size="sm"
+                          >
+                            {option.mode === 'flight' && <Plane className="w-4 h-4 mr-2" />}
+                            {option.mode === 'train' && <Train className="w-4 h-4 mr-2" />}
+                            {option.mode === 'bus' && <Bus className="w-4 h-4 mr-2" />}
+                            {option.mode === 'car' && <Car className="w-4 h-4 mr-2" />}
+                            Book {option.mode}
+                            <ExternalLink className="w-3 h-3 ml-2" />
+                          </Button>
                         </CardContent>
                       </Card>
                     ))}
@@ -233,6 +301,49 @@ const DestinationDetail = () => {
                 )}
               </CardContent>
             </Card>
+
+            {/* Quick Booking Buttons */}
+            <Card>
+              <CardHeader>
+                <CardTitle>Quick Booking</CardTitle>
+              </CardHeader>
+              <CardContent>
+                <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
+                  <Button 
+                    variant="outline" 
+                    onClick={() => handleBooking('flight', `${destination.city} to ${destination.name}`)}
+                    className="h-20 flex-col"
+                  >
+                    <Plane className="w-6 h-6 mb-2" />
+                    <span className="text-xs">Book Flight</span>
+                  </Button>
+                  <Button 
+                    variant="outline" 
+                    onClick={() => handleBooking('train', `${destination.city} to ${destination.name}`)}
+                    className="h-20 flex-col"
+                  >
+                    <Train className="w-6 h-6 mb-2" />
+                    <span className="text-xs">Book Train</span>
+                  </Button>
+                  <Button 
+                    variant="outline" 
+                    onClick={() => handleBooking('bus', `${destination.city} to ${destination.name}`)}
+                    className="h-20 flex-col"
+                  >
+                    <Bus className="w-6 h-6 mb-2" />
+                    <span className="text-xs">Book Bus</span>
+                  </Button>
+                  <Button 
+                    variant="outline" 
+                    onClick={() => handleBooking('car', `${destination.city} to ${destination.name}`)}
+                    className="h-20 flex-col"
+                  >
+                    <Car className="w-6 h-6 mb-2" />
+                    <span className="text-xs">Rent Car</span>
+                  </Button>
+                </div>
+              </CardContent>
+            </Card>
           </TabsContent>
 
           {/* Hotels */}
@@ -242,7 +353,7 @@ const DestinationDetail = () => {
                 {destination.hotels.map((hotel, idx) => (
                   <Card key={idx}>
                     {hotel.imageUrl && (
-                      <div className="h-48 overflow-hidden">
+                      <div className="h-48 overflow-hidden rounded-t-lg">
                         <img src={hotel.imageUrl} alt={hotel.name} className="w-full h-full object-cover" />
                       </div>
                     )}
@@ -257,11 +368,20 @@ const DestinationDetail = () => {
                     </CardHeader>
                     <CardContent>
                       <p className="text-xl font-bold text-primary mb-3">₹{hotel.pricePerNight.toLocaleString('en-IN')}/night</p>
-                      <div className="flex flex-wrap gap-2">
+                      <div className="flex flex-wrap gap-2 mb-4">
                         {hotel.amenities.map((amenity, aIdx) => (
                           <Badge key={aIdx} variant="outline">{amenity}</Badge>
                         ))}
                       </div>
+                      <Button 
+                        onClick={() => handleBooking('hotel', `${hotel.name} ${destination.name}`)}
+                        className="w-full"
+                        size="sm"
+                      >
+                        <Hotel className="w-4 h-4 mr-2" />
+                        Book Hotel
+                        <ExternalLink className="w-3 h-3 ml-2" />
+                      </Button>
                     </CardContent>
                   </Card>
                 ))}
@@ -300,10 +420,19 @@ const DestinationDetail = () => {
                       </CardHeader>
                       {typeof restaurant === 'object' && (
                         <CardContent>
-                          <div className="flex gap-4">
+                          <div className="flex gap-4 mb-4">
                             {restaurantPrice && <Badge variant="outline">{restaurantPrice}</Badge>}
                             {restaurantCuisine && <span className="text-sm text-muted-foreground">{restaurantCuisine}</span>}
                           </div>
+                          <Button 
+                            onClick={() => handleBooking('restaurant', `${restaurantName} ${destination.name}`)}
+                            className="w-full"
+                            size="sm"
+                          >
+                            <Utensils className="w-4 h-4 mr-2" />
+                            View on Map & Reviews
+                            <ExternalLink className="w-3 h-3 ml-2" />
+                          </Button>
                         </CardContent>
                       )}
                     </Card>
@@ -326,7 +455,7 @@ const DestinationDetail = () => {
                 {destination.activities.map((activity, idx) => (
                   <Card key={idx}>
                     {activity.imageUrl && (
-                      <div className="h-40 overflow-hidden">
+                      <div className="h-40 overflow-hidden rounded-t-lg">
                         <img src={activity.imageUrl} alt={activity.name} className="w-full h-full object-cover" />
                       </div>
                     )}
@@ -340,8 +469,8 @@ const DestinationDetail = () => {
                       </div>
                     </CardHeader>
                     <CardContent>
-                      <p className="text-sm text-muted-foreground mb-2">{activity.description}</p>
-                      <p className="text-lg font-bold text-primary">₹{activity.cost.toLocaleString('en-IN')}</p>
+                      <p className="text-sm text-muted-foreground mb-3">{activity.description}</p>
+                      <p className="text-lg font-bold text-primary mb-3">₹{activity.cost.toLocaleString('en-IN')}</p>
                     </CardContent>
                   </Card>
                 ))}
