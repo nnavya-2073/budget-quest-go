@@ -60,7 +60,7 @@ const BudgetForm = () => {
             Plan Your <span className="text-primary">Dream Trip</span>
           </h2>
           <p className="text-lg text-muted-foreground">
-            Tell us your preferences and let AI find the perfect destinations for you
+            Tell us your preferences and let AI find the perfect destinations worldwide
           </p>
         </div>
 
@@ -119,13 +119,13 @@ const BudgetForm = () => {
 
               {/* Destination City */}
               <div className="space-y-2">
-                <Label htmlFor="destinationCity" className="text-base font-semibold">
+          <Label htmlFor="destinationCity" className="text-base font-semibold">
                   Destination City (Optional)
                 </Label>
                 <Input
                   id="destinationCity"
                   type="text"
-                  placeholder="e.g., Goa, Jaipur, Manali"
+                  placeholder="e.g., Goa, Paris, Bali, Tokyo, Dubai"
                   value={destinationCity}
                   onChange={(e) => setDestinationCity(e.target.value)}
                   className="text-base"

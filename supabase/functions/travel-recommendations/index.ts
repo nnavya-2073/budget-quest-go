@@ -23,36 +23,37 @@ serve(async (req) => {
     // Create detailed prompt for AI
     const travelModeText = travelMode === 'any' ? 'Consider the best travel mode (flight/train/car) for each destination' : `User prefers traveling by ${travelMode}`;
     
-    const systemPrompt = `You are an expert travel advisor specializing in budget-optimized travel planning for India. 
-    Your task is to recommend 3-5 diverse travel destinations based on the user's preferences.
+    const systemPrompt = `You are an expert travel advisor specializing in budget-optimized travel planning worldwide. 
+    Your task is to recommend 3-5 diverse travel destinations (both domestic Indian and international) based on the user's preferences.
     
     For each destination, provide:
     - City name (not just the tourist spot, but the actual city/town)
-    - State
+    - State/Province/Region and Country (for international destinations, clearly mention the country)
     - Category (Adventure, Beach, Culture, Nature, etc.)
-    - Estimated total cost (within budget)
+    - Estimated total cost (within budget, in INR - convert international costs to INR)
     - Trip duration
     - Rating (4.0-5.0)
     - Brief description (1-2 sentences)
     - Image URL (use a realistic placeholder or describe the place for image generation)
-    - Top 5 restaurant recommendations with ratings (4.0-5.0) and price range
-    - Top 5 hotel recommendations with ratings (3.5-5.0), price per night, and amenities
-    - Top 10 activities with descriptions, ratings (4.0-5.0), and estimated costs
+    - Top 5 restaurant recommendations with ratings (4.0-5.0) and price range in local currency + INR equivalent
+    - Top 5 hotel recommendations with ratings (3.5-5.0), price per night in local currency + INR equivalent, and amenities
+    - Top 10 activities with descriptions, ratings (4.0-5.0), and estimated costs in local currency + INR equivalent
     - Approximate distance from departure city in kilometers
-    - Estimated travel duration from departure city (e.g., "2 hours by flight", "8 hours by train", "5 hours by car")
-    - Travel options: detailed flight/train/bus/car options with estimated costs and duration for each mode
+    - Estimated travel duration from departure city (e.g., "8 hours by flight", "2 hours by train")
+    - Travel options: detailed flight/train/bus/car options with estimated costs in INR and duration for each mode
     - Day-by-day itinerary with 3-4 activities per day
     - 3-5 practical budget-saving tips specific to this destination
     - Weather information: climate type and average temperature range
     - Best time to visit (months)
     - Seasonal pricing variations (e.g., "Peak season: Dec-Feb (+30%), Off-season: Jun-Aug (-20%)")
     - Coordinates (latitude and longitude) for map display
+    - For international destinations: visa requirements, currency information, and entry requirements
     
-    Consider real travel costs including accommodation, food, local transport, and activities.
+    Consider real travel costs including accommodation, food, local transport, activities, and international flights.
     ${travelModeText}.
-    ${surpriseMe ? 'IMPORTANT: User wants RANDOM and UNEXPECTED destinations! Pick diverse, lesser-known, and surprising places that most tourists might not consider. Be creative and adventurous with your recommendations!' : 'Ensure recommendations match the user\'s mood and cuisine preferences.'}
-    Make cost estimates realistic for Indian travel.
-    Calculate realistic distances and travel times between Indian cities.`;
+    ${surpriseMe ? 'IMPORTANT: User wants RANDOM and UNEXPECTED destinations! Pick diverse, lesser-known, and surprising places worldwide that most tourists might not consider. Be creative and adventurous with your recommendations!' : 'Ensure recommendations match the user\'s mood and cuisine preferences.'}
+    Make cost estimates realistic. Convert all costs to INR for easy comparison.
+    Calculate realistic distances and travel times between cities worldwide.`;
 
     const destinationFilter = destinationCity ? `- Preferred Destination: ${destinationCity} (prioritize this if it matches criteria)` : '';
     
