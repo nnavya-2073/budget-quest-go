@@ -5,12 +5,14 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { ArrowLeft, Star, IndianRupee, MapPin, Calendar, CloudSun, Utensils, Hotel, Sparkles, Navigation as NavigationIcon, TrendingUp, Plane, Train, Bus, Car, ExternalLink, Map as MapIcon } from "lucide-react";
+import { ArrowLeft, Star, IndianRupee, MapPin, Calendar, CloudSun, Utensils, Hotel, Sparkles, Navigation as NavigationIcon, TrendingUp, Plane, Train, Bus, Car, ExternalLink, Map as MapIcon, Share2, Clock } from "lucide-react";
 import CostBreakdown from "@/components/CostBreakdown";
 import MapView from "@/components/MapView";
 import { CurrencyConverter } from "@/components/CurrencyConverter";
 import { VisaChecker } from "@/components/VisaChecker";
 import { FlightPriceTracker } from "@/components/FlightPriceTracker";
+import { ShareTrip } from "@/components/ShareTrip";
+import { TripTimeline } from "@/components/TripTimeline";
 
 interface Restaurant {
   name: string;
@@ -72,6 +74,8 @@ const DestinationDetail = () => {
   const navigate = useNavigate();
   const destination = location.state?.destination as Destination;
   const [showMap, setShowMap] = useState(false);
+  const [showShareDialog, setShowShareDialog] = useState(false);
+  const [showTimeline, setShowTimeline] = useState(false);
 
   const handleBooking = (type: string, searchQuery: string) => {
     let url = "";
@@ -134,18 +138,38 @@ const DestinationDetail = () => {
             className="w-full h-full object-cover"
           />
           <div className="absolute inset-0 bg-gradient-to-t from-background to-transparent" />
-          <div className="absolute bottom-8 left-8 text-white">
-            <h1 className="text-4xl font-bold mb-2">{destination.name}</h1>
-            <div className="flex items-center gap-4 text-lg">
-              <span className="flex items-center gap-2">
-                <MapPin className="w-5 h-5" />
-                {destination.city}, {destination.state}
-              </span>
-              <Badge className="bg-primary/90">{destination.category}</Badge>
-              <span className="flex items-center gap-1">
-                <Star className="w-5 h-5 fill-accent text-accent" />
-                {destination.rating}
-              </span>
+          <div className="absolute bottom-8 left-8 right-8 flex items-end justify-between text-white">
+            <div>
+              <h1 className="text-4xl font-bold mb-2">{destination.name}</h1>
+              <div className="flex items-center gap-4 text-lg">
+                <span className="flex items-center gap-2">
+                  <MapPin className="w-5 h-5" />
+                  {destination.city}, {destination.state}
+                </span>
+                <Badge className="bg-primary/90">{destination.category}</Badge>
+                <span className="flex items-center gap-1">
+                  <Star className="w-5 h-5 fill-accent text-accent" />
+                  {destination.rating}
+                </span>
+              </div>
+            </div>
+            <div className="flex gap-2">
+              <Button
+                onClick={() => setShowTimeline(true)}
+                variant="secondary"
+                className="gap-2"
+              >
+                <Clock className="w-4 h-4" />
+                Timeline
+              </Button>
+              <Button
+                onClick={() => setShowShareDialog(true)}
+                variant="secondary"
+                className="gap-2"
+              >
+                <Share2 className="w-4 h-4" />
+                Share
+              </Button>
             </div>
           </div>
         </div>
@@ -555,6 +579,31 @@ const DestinationDetail = () => {
           />
         </div>
       </div>
+
+      {/* Share Dialog */}
+      <ShareTrip
+        open={showShareDialog}
+        onOpenChange={setShowShareDialog}
+        destination={{
+          name: destination.name,
+          city: destination.city,
+          state: destination.state,
+          cost: destination.cost,
+          duration: destination.duration,
+          rating: destination.rating
+        }}
+      />
+
+      {/* Timeline Dialog */}
+      <TripTimeline
+        open={showTimeline}
+        onOpenChange={setShowTimeline}
+        destination={{
+          name: destination.name,
+          duration: destination.duration,
+          itinerary: destination.itinerary
+        }}
+      />
     </div>
   );
 };
