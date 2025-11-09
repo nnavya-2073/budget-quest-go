@@ -5,7 +5,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { ArrowLeft, Star, IndianRupee, MapPin, Calendar, CloudSun, Utensils, Hotel, Sparkles, Navigation as NavigationIcon, TrendingUp, Plane, Train, Bus, Car, ExternalLink, Map as MapIcon, Share2, Clock } from "lucide-react";
+import { ArrowLeft, Star, IndianRupee, MapPin, Calendar, CloudSun, Utensils, Hotel, Sparkles, Navigation as NavigationIcon, TrendingUp, Plane, Train, Bus, Car, ExternalLink, Map as MapIcon, Share2, Clock, Image as ImageIcon, Briefcase } from "lucide-react";
 import CostBreakdown from "@/components/CostBreakdown";
 import MapView from "@/components/MapView";
 import { CurrencyConverter } from "@/components/CurrencyConverter";
@@ -13,6 +13,8 @@ import { VisaChecker } from "@/components/VisaChecker";
 import { FlightPriceTracker } from "@/components/FlightPriceTracker";
 import { ShareTrip } from "@/components/ShareTrip";
 import { TripTimeline } from "@/components/TripTimeline";
+import { PhotoGallery } from "@/components/PhotoGallery";
+import { PackingList } from "@/components/PackingList";
 
 interface Restaurant {
   name: string;
@@ -76,6 +78,8 @@ const DestinationDetail = () => {
   const [showMap, setShowMap] = useState(false);
   const [showShareDialog, setShowShareDialog] = useState(false);
   const [showTimeline, setShowTimeline] = useState(false);
+  const [showPhotoGallery, setShowPhotoGallery] = useState(false);
+  const [showPackingList, setShowPackingList] = useState(false);
 
   const handleBooking = (type: string, searchQuery: string) => {
     let url = "";
@@ -161,6 +165,22 @@ const DestinationDetail = () => {
               >
                 <Clock className="w-4 h-4" />
                 Timeline
+              </Button>
+              <Button
+                onClick={() => setShowPhotoGallery(true)}
+                variant="secondary"
+                className="gap-2"
+              >
+                <ImageIcon className="w-4 h-4" />
+                Photos
+              </Button>
+              <Button
+                onClick={() => setShowPackingList(true)}
+                variant="secondary"
+                className="gap-2"
+              >
+                <Briefcase className="w-4 h-4" />
+                Pack
               </Button>
               <Button
                 onClick={() => setShowShareDialog(true)}
@@ -602,6 +622,27 @@ const DestinationDetail = () => {
           name: destination.name,
           duration: destination.duration,
           itinerary: destination.itinerary
+        }}
+      />
+
+      {/* Photo Gallery Dialog */}
+      <PhotoGallery
+        open={showPhotoGallery}
+        onOpenChange={setShowPhotoGallery}
+        destinationName={destination.name}
+        city={destination.city}
+      />
+
+      {/* Packing List Dialog */}
+      <PackingList
+        open={showPackingList}
+        onOpenChange={setShowPackingList}
+        destination={{
+          name: destination.name,
+          duration: destination.duration,
+          weather: destination.weather,
+          category: destination.category,
+          activities: destination.activities
         }}
       />
     </div>

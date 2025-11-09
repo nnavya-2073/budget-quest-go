@@ -17,7 +17,6 @@ const BudgetForm = () => {
   const [mood, setMood] = useState("");
   const [cuisine, setCuisine] = useState("");
   const [departureCity, setDepartureCity] = useState("");
-  const [destinationCity, setDestinationCity] = useState("");
   const [surpriseMe, setSurpriseMe] = useState(false);
   const [travelMode, setTravelMode] = useState("any");
 
@@ -41,7 +40,6 @@ const BudgetForm = () => {
       mood: surpriseMe ? "surprise" : mood,
       cuisine: surpriseMe ? "surprise" : cuisine,
       departureCity,
-      destinationCity,
       surpriseMe,
       travelMode,
     };
@@ -60,7 +58,7 @@ const BudgetForm = () => {
             Plan Your <span className="text-primary">Dream Trip</span>
           </h2>
           <p className="text-lg text-muted-foreground">
-            Tell us your preferences and let AI find the perfect destinations worldwide
+            Tell us your preferences and discover amazing international destinations within your budget
           </p>
         </div>
 
@@ -115,21 +113,9 @@ const BudgetForm = () => {
                   onChange={(e) => setDepartureCity(e.target.value)}
                   className="text-base"
                 />
-              </div>
-
-              {/* Destination City */}
-              <div className="space-y-2">
-          <Label htmlFor="destinationCity" className="text-base font-semibold">
-                  Destination City (Optional)
-                </Label>
-                <Input
-                  id="destinationCity"
-                  type="text"
-                  placeholder="e.g., Goa, Paris, Bali, Tokyo, Dubai"
-                  value={destinationCity}
-                  onChange={(e) => setDestinationCity(e.target.value)}
-                  className="text-base"
-                />
+                <p className="text-xs text-muted-foreground">
+                  We'll find the best international destinations within your budget from here
+                </p>
               </div>
 
               {/* Duration */}
@@ -194,7 +180,7 @@ const BudgetForm = () => {
                     Surprise Me with Random Destinations
                   </Label>
                   <p className="text-xs text-muted-foreground mt-1">
-                    Let AI pick exciting random places based on your budget and departure city
+                    Let AI pick exciting random international places based on your budget
                   </p>
                 </div>
               </div>

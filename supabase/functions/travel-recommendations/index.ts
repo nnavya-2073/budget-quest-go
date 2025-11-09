@@ -11,20 +11,21 @@ serve(async (req) => {
   }
 
   try {
-    const { budget, duration, mood, cuisine, departureCity, destinationCity, surpriseMe, travelMode } = await req.json();
+    const { budget, duration, mood, cuisine, departureCity, surpriseMe, travelMode } = await req.json();
     const LOVABLE_API_KEY = Deno.env.get('LOVABLE_API_KEY');
 
     if (!LOVABLE_API_KEY) {
       throw new Error('LOVABLE_API_KEY is not configured');
     }
 
-    console.log('Generating recommendations for:', { budget, duration, mood, cuisine, departureCity, destinationCity, surpriseMe, travelMode });
+    console.log('Generating recommendations for:', { budget, duration, mood, cuisine, departureCity, surpriseMe, travelMode });
 
     // Create detailed prompt for AI
     const travelModeText = travelMode === 'any' ? 'Consider the best travel mode (flight/train/car) for each destination' : `User prefers traveling by ${travelMode}`;
     
-    const systemPrompt = `You are an expert travel advisor specializing in budget-optimized travel planning worldwide. 
-    Your task is to recommend 3-5 diverse travel destinations (both domestic Indian and international) based on the user's preferences.
+    const systemPrompt = `You are an expert international travel advisor specializing in budget-optimized travel planning worldwide. 
+    Your task is to recommend 3-5 diverse INTERNATIONAL travel destinations from around the world based on the user's preferences.
+    IMPORTANT: Focus ONLY on international destinations outside of India. Include popular and hidden gem destinations from Asia, Europe, Americas, Africa, and Oceania.
     
     For each destination, provide:
     - City name (not just the tourist spot, but the actual city/town)
@@ -55,29 +56,26 @@ serve(async (req) => {
     Make cost estimates realistic. Convert all costs to INR for easy comparison.
     Calculate realistic distances and travel times between cities worldwide.`;
 
-    const destinationFilter = destinationCity ? `- Preferred Destination: ${destinationCity} (prioritize this if it matches criteria)` : '';
-    
     const userPrompt = surpriseMe 
-      ? `Find RANDOM and SURPRISING travel destinations for an adventurous traveler:
+      ? `Find RANDOM and SURPRISING INTERNATIONAL travel destinations for an adventurous traveler:
     - Departure City: ${departureCity}
-    ${destinationFilter}
     - Budget: ₹${budget}
     - Duration: ${duration}
     - Travel Mode: ${travelMode === 'any' ? 'Optimize for best option' : travelMode}
     
-    IMPORTANT: Recommend unexpected, offbeat, and lesser-known destinations! Think beyond typical tourist spots.
-    Include hidden gems, unusual places, and destinations with unique experiences.
+    CRITICAL: Recommend ONLY INTERNATIONAL destinations OUTSIDE of India. Choose unexpected, offbeat, and lesser-known international places! Think beyond typical tourist spots.
+    Include hidden gems from countries around the world, unusual places, and destinations with unique experiences across different continents.
     For each destination, include hotels, restaurants, activities (all with ratings and reviews), travel options, seasonal pricing, a detailed day-by-day itinerary, budget-saving tips, weather info, best time to visit, and exact coordinates.`
-      : `Find perfect travel destinations for:
+      : `Find perfect INTERNATIONAL travel destinations for:
     - Departure City: ${departureCity}
-    ${destinationFilter}
     - Budget: ₹${budget}
     - Duration: ${duration}
     - Mood: ${mood}
     - Cuisine preference: ${cuisine}
     - Travel Mode: ${travelMode === 'any' ? 'Optimize for best option' : travelMode}
     
-    Return diverse destinations that match these criteria and provide a balanced mix of experiences.
+    CRITICAL: Return ONLY INTERNATIONAL destinations from countries around the world (Asia, Europe, Americas, Africa, Oceania) that match these criteria. DO NOT include Indian destinations.
+    Provide diverse international destinations with a balanced mix of experiences.
     For each destination, include top hotels, restaurants, activities (all with ratings, reviews, and prices), detailed travel options (flight/train/bus/car with costs), seasonal pricing variations, a detailed day-by-day itinerary, budget-saving tips, weather info, best time to visit, and exact coordinates.`;
 
     const response = await fetch('https://ai.gateway.lovable.dev/v1/chat/completions', {
