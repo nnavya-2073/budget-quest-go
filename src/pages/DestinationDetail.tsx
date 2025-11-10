@@ -5,7 +5,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { ArrowLeft, Star, IndianRupee, MapPin, Calendar, CloudSun, Utensils, Hotel, Sparkles, Navigation as NavigationIcon, TrendingUp, Plane, Train, Bus, Car, ExternalLink, Map as MapIcon, Share2, Clock, Image as ImageIcon, Briefcase } from "lucide-react";
+import { ArrowLeft, Star, IndianRupee, MapPin, Calendar, CloudSun, Utensils, Hotel, Sparkles, Navigation as NavigationIcon, TrendingUp, Plane, Train, Bus, Car, ExternalLink, Map as MapIcon, Share2, Clock, Image as ImageIcon, Briefcase, MessageSquare } from "lucide-react";
 import CostBreakdown from "@/components/CostBreakdown";
 import MapView from "@/components/MapView";
 import { CurrencyConverter } from "@/components/CurrencyConverter";
@@ -15,6 +15,8 @@ import { ShareTrip } from "@/components/ShareTrip";
 import { TripTimeline } from "@/components/TripTimeline";
 import { PhotoGallery } from "@/components/PhotoGallery";
 import { PackingList } from "@/components/PackingList";
+import { ReviewsList } from "@/components/ReviewsList";
+import { AddReviewForm } from "@/components/AddReviewForm";
 
 interface Restaurant {
   name: string;
@@ -80,6 +82,8 @@ const DestinationDetail = () => {
   const [showTimeline, setShowTimeline] = useState(false);
   const [showPhotoGallery, setShowPhotoGallery] = useState(false);
   const [showPackingList, setShowPackingList] = useState(false);
+  const [showReviews, setShowReviews] = useState(false);
+  const [reviewsKey, setReviewsKey] = useState(0);
 
   const handleBooking = (type: string, searchQuery: string) => {
     let url = "";
@@ -181,6 +185,14 @@ const DestinationDetail = () => {
               >
                 <Briefcase className="w-4 h-4" />
                 Pack
+              </Button>
+              <Button
+                onClick={() => setShowReviews(true)}
+                variant="secondary"
+                className="gap-2"
+              >
+                <MessageSquare className="w-4 h-4" />
+                Reviews
               </Button>
               <Button
                 onClick={() => setShowShareDialog(true)}
@@ -645,6 +657,35 @@ const DestinationDetail = () => {
           activities: destination.activities
         }}
       />
+
+      {/* Reviews Section */}
+      {showReviews && (
+        <div className="fixed inset-0 bg-background/80 backdrop-blur-sm z-50 overflow-y-auto">
+          <div className="container max-w-4xl mx-auto p-4 py-8">
+            <div className="flex items-center justify-between mb-6">
+              <h2 className="text-3xl font-bold">Reviews for {destination.name}</h2>
+              <Button variant="ghost" onClick={() => setShowReviews(false)}>
+                Close
+              </Button>
+            </div>
+            
+            <div className="space-y-8">
+              <AddReviewForm 
+                destinationName={destination.name}
+                onReviewAdded={() => setReviewsKey(prev => prev + 1)}
+              />
+              
+              <div>
+                <h3 className="text-2xl font-semibold mb-4">User Reviews</h3>
+                <ReviewsList 
+                  key={reviewsKey}
+                  destinationName={destination.name}
+                />
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 };

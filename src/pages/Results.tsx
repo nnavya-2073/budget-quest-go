@@ -106,6 +106,7 @@ const Results = () => {
           departureCity: prefs.departureCity,
           surpriseMe: prefs.surpriseMe,
           travelMode: prefs.travelMode || 'any',
+          numPeople: prefs.numPeople || 1,
         },
       });
 

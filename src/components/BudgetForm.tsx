@@ -19,12 +19,23 @@ const BudgetForm = () => {
   const [departureCity, setDepartureCity] = useState("");
   const [surpriseMe, setSurpriseMe] = useState(false);
   const [travelMode, setTravelMode] = useState("any");
+  const [numPeople, setNumPeople] = useState("1");
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     
     if (!departureCity) {
       toast.error("Please enter your departure city");
+      return;
+    }
+
+    if (!numPeople || parseInt(numPeople) < 1) {
+      toast.error("Please enter number of travelers");
+      return;
+    }
+
+    if (budget[0] > 1000000) {
+      toast.error("Maximum budget is ₹10,00,000 (10 lakhs)");
       return;
     }
 
@@ -42,6 +53,7 @@ const BudgetForm = () => {
       departureCity,
       surpriseMe,
       travelMode,
+      numPeople: parseInt(numPeople),
     };
     
     sessionStorage.setItem('travelPreferences', JSON.stringify(preferences));
@@ -58,7 +70,7 @@ const BudgetForm = () => {
             Plan Your <span className="text-primary">Dream Trip</span>
           </h2>
           <p className="text-lg text-muted-foreground">
-            Tell us your preferences and discover amazing international destinations within your budget
+            Tell us your preferences and discover amazing destinations within your budget
           </p>
         </div>
 
@@ -78,7 +90,7 @@ const BudgetForm = () => {
               <div className="space-y-3">
                 <div className="flex items-center justify-between">
                   <Label htmlFor="budget" className="text-base font-semibold">
-                    Your Budget
+                    Your Budget (Max ₹10 Lakhs)
                   </Label>
                   <span className="flex items-center gap-1 text-2xl font-bold text-primary">
                     <IndianRupee className="w-5 h-5" />
@@ -88,7 +100,7 @@ const BudgetForm = () => {
                 <Slider
                   id="budget"
                   min={5000}
-                  max={200000}
+                  max={1000000}
                   step={5000}
                   value={budget}
                   onValueChange={setBudget}
@@ -96,8 +108,27 @@ const BudgetForm = () => {
                 />
                 <div className="flex justify-between text-xs text-muted-foreground">
                   <span>₹5,000</span>
-                  <span>₹2,00,000</span>
+                  <span>₹10,00,000</span>
                 </div>
+              </div>
+
+              {/* Number of People */}
+              <div className="space-y-2">
+                <Label htmlFor="numPeople" className="text-base font-semibold">
+                  Number of Travelers
+                </Label>
+                <Input
+                  id="numPeople"
+                  type="number"
+                  placeholder="How many people are traveling?"
+                  value={numPeople}
+                  onChange={(e) => setNumPeople(e.target.value)}
+                  min={1}
+                  className="text-base"
+                />
+                <p className="text-xs text-muted-foreground">
+                  Budget will be calculated for all travelers
+                </p>
               </div>
 
               {/* Departure City */}
@@ -114,7 +145,7 @@ const BudgetForm = () => {
                   className="text-base"
                 />
                 <p className="text-xs text-muted-foreground">
-                  We'll find the best international destinations within your budget from here
+                  We'll find destinations within your budget from here
                 </p>
               </div>
 
@@ -180,7 +211,7 @@ const BudgetForm = () => {
                     Surprise Me with Random Destinations
                   </Label>
                   <p className="text-xs text-muted-foreground mt-1">
-                    Let AI pick exciting random international places based on your budget
+                    Let AI pick exciting random places (Indian & International) based on your budget
                   </p>
                 </div>
               </div>
