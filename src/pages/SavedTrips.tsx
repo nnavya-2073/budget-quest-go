@@ -3,8 +3,11 @@ import { useNavigate } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import Navigation from "@/components/Navigation";
 import DestinationCard from "@/components/DestinationCard";
+import WeatherForecast from "@/components/WeatherForecast";
 import { toast } from "sonner";
-import { Loader2 } from "lucide-react";
+import { Loader2, CloudSun } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 
 interface SavedTrip {
   id: string;
@@ -23,6 +26,8 @@ const SavedTrips = () => {
   const navigate = useNavigate();
   const [savedTrips, setSavedTrips] = useState<SavedTrip[]>([]);
   const [isLoading, setIsLoading] = useState(true);
+  const [selectedCity, setSelectedCity] = useState<string | null>(null);
+  const [showWeather, setShowWeather] = useState(false);
 
   useEffect(() => {
     checkAuthAndFetchTrips();
@@ -70,6 +75,11 @@ const SavedTrips = () => {
     }
   };
 
+  const handleViewWeather = (cityName: string) => {
+    setSelectedCity(cityName);
+    setShowWeather(true);
+  };
+
   return (
     <div className="min-h-screen bg-gradient-to-b from-background via-primary/5 to-background">
       <Navigation />
@@ -92,26 +102,46 @@ const SavedTrips = () => {
           ) : (
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
               {savedTrips.map((trip) => (
-                <DestinationCard
-                  key={trip.id}
-                  city={trip.destination_name}
-                  name={trip.destination_name}
-                  state={trip.destination_state}
-                  category={trip.category}
-                  cost={trip.cost}
-                  duration={trip.duration}
-                  rating={trip.rating}
-                  image={trip.image_url}
-                  restaurants={trip.restaurants}
-                  description={trip.description}
-                  savedTripId={trip.id}
-                  onDelete={handleDelete}
-                />
+                <div key={trip.id} className="relative">
+                  <DestinationCard
+                    city={trip.destination_name}
+                    name={trip.destination_name}
+                    state={trip.destination_state}
+                    category={trip.category}
+                    cost={trip.cost}
+                    duration={trip.duration}
+                    rating={trip.rating}
+                    image={trip.image_url}
+                    restaurants={trip.restaurants}
+                    description={trip.description}
+                    savedTripId={trip.id}
+                    onDelete={handleDelete}
+                  />
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    className="mt-2 w-full"
+                    onClick={() => handleViewWeather(trip.destination_name)}
+                  >
+                    <CloudSun className="w-4 h-4 mr-2" />
+                    View Weather
+                  </Button>
+                </div>
               ))}
             </div>
           )}
         </div>
       </div>
+
+      {/* Weather Dialog */}
+      <Dialog open={showWeather} onOpenChange={setShowWeather}>
+        <DialogContent className="sm:max-w-2xl">
+          <DialogHeader>
+            <DialogTitle>Weather Forecast</DialogTitle>
+          </DialogHeader>
+          {selectedCity && <WeatherForecast city={selectedCity} />}
+        </DialogContent>
+      </Dialog>
     </div>
   );
 };

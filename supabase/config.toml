@@ -11,3 +11,6 @@ verify_jwt = false
 
 [functions.flight-price-tracker]
 verify_jwt = false
+
+[functions.weather-forecast]
+verify_jwt = false

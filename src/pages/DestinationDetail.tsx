@@ -18,6 +18,7 @@ import { PackingList } from "@/components/PackingList";
 import { ReviewsList } from "@/components/ReviewsList";
 import { AddReviewForm } from "@/components/AddReviewForm";
 import TripExpenseTracker from "@/components/TripExpenseTracker";
+import WeatherForecast from "@/components/WeatherForecast";
 
 interface Restaurant {
   name: string;
@@ -612,6 +613,11 @@ const DestinationDetail = () => {
           </TabsContent>
         </Tabs>
 
+        {/* Weather Forecast Section */}
+        <div className="mt-8">
+          <WeatherForecast city={`${destination.city}, ${destination.state}`} />
+        </div>
+
         {/* Travel Tools Section */}
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mt-8">
           <CurrencyConverter />
@@ -634,6 +640,13 @@ const DestinationDetail = () => {
           cost: destination.cost,
           duration: destination.duration,
           rating: destination.rating
+        }}
+        itinerary={destination.itinerary}
+        budgetBreakdown={{
+          accommodation: Math.round(destination.cost * 0.40),
+          food: Math.round(destination.cost * 0.30),
+          transport: Math.round(destination.cost * 0.20),
+          activities: Math.round(destination.cost * 0.10)
         }}
       />
 
