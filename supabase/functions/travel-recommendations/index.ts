@@ -24,8 +24,8 @@ serve(async (req) => {
     const travelModeText = travelMode === 'any' ? 'Consider the best travel mode (flight/train/car) for each destination' : `User prefers traveling by ${travelMode}`;
     
     const systemPrompt = `You are an expert travel advisor specializing in budget-optimized travel planning for both international and Indian domestic destinations. 
-    Your task is to recommend 3-5 diverse travel destinations from around the world AND within India based on the user's preferences.
-    IMPORTANT: Provide a MIX of both international destinations (outside India) AND Indian domestic destinations.
+    Your task is to recommend 6-7 diverse travel destinations from around the world AND within India based on the user's preferences.
+    IMPORTANT: Provide a BALANCED MIX of both international destinations (outside India) AND Indian domestic destinations.
     
     CRITICAL BUDGET CALCULATION RULES:
     - The user is traveling with ${numPeople} people
@@ -107,7 +107,7 @@ serve(async (req) => {
             type: 'function',
             function: {
               name: 'recommend_destinations',
-              description: 'Return 3-5 travel destination recommendations',
+              description: 'Return 6-7 travel destination recommendations',
               parameters: {
                 type: 'object',
                 properties: {

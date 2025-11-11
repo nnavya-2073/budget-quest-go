@@ -17,6 +17,7 @@ import { PhotoGallery } from "@/components/PhotoGallery";
 import { PackingList } from "@/components/PackingList";
 import { ReviewsList } from "@/components/ReviewsList";
 import { AddReviewForm } from "@/components/AddReviewForm";
+import TripExpenseTracker from "@/components/TripExpenseTracker";
 
 interface Restaurant {
   name: string;
@@ -574,29 +575,39 @@ const DestinationDetail = () => {
 
           {/* Budget */}
           <TabsContent value="budget" className="space-y-4">
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              <CostBreakdown totalCost={destination.cost} />
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
+              <div className="space-y-4">
+                <CostBreakdown 
+                  totalCost={destination.cost} 
+                  duration={parseInt(destination.duration.match(/\d+/)?.[0] || "5")}
+                />
+                
+                {destination.budgetTips && destination.budgetTips.length > 0 && (
+                  <Card>
+                    <CardHeader>
+                      <CardTitle className="flex items-center gap-2">
+                        <TrendingUp className="w-5 h-5" />
+                        Money-Saving Tips
+                      </CardTitle>
+                    </CardHeader>
+                    <CardContent>
+                      <ul className="space-y-3">
+                        {destination.budgetTips.map((tip, idx) => (
+                          <li key={idx} className="flex items-start gap-2 p-3 bg-muted/50 rounded-lg">
+                            <Sparkles className="w-5 h-5 text-accent flex-shrink-0 mt-0.5" />
+                            <span className="text-sm">{tip}</span>
+                          </li>
+                        ))}
+                      </ul>
+                    </CardContent>
+                  </Card>
+                )}
+              </div>
               
-              {destination.budgetTips && destination.budgetTips.length > 0 && (
-                <Card>
-                  <CardHeader>
-                    <CardTitle className="flex items-center gap-2">
-                      <TrendingUp className="w-5 h-5" />
-                      Money-Saving Tips
-                    </CardTitle>
-                  </CardHeader>
-                  <CardContent>
-                    <ul className="space-y-3">
-                      {destination.budgetTips.map((tip, idx) => (
-                        <li key={idx} className="flex items-start gap-2 p-3 bg-muted/50 rounded-lg">
-                          <Sparkles className="w-5 h-5 text-accent flex-shrink-0 mt-0.5" />
-                          <span className="text-sm">{tip}</span>
-                        </li>
-                      ))}
-                    </ul>
-                  </CardContent>
-                </Card>
-              )}
+              <TripExpenseTracker 
+                totalBudget={destination.cost} 
+                duration={parseInt(destination.duration.match(/\d+/)?.[0] || "5")}
+              />
             </div>
           </TabsContent>
         </Tabs>
