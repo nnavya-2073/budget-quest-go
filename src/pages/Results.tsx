@@ -436,11 +436,11 @@ const Results = () => {
       <div className="container mx-auto px-4 pt-24 pb-12">
         <Button 
           variant="ghost" 
-          onClick={() => navigate('/')}
+          onClick={() => navigate(-1)}
           className="mb-8"
         >
           <ArrowLeft className="mr-2 w-4 h-4" />
-          Back to Home
+          Back
         </Button>
 
         {loading ? (

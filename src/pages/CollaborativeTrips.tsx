@@ -9,7 +9,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { toast } from "sonner";
-import { Users, Plus, Calendar, DollarSign, Loader2 } from "lucide-react";
+import { Users, Plus, Calendar, DollarSign, Loader2, ArrowLeft } from "lucide-react";
 import { format } from "date-fns";
 
 interface TripGroup {
@@ -132,6 +132,14 @@ const CollaborativeTrips = () => {
       <Navigation />
       <div className="container mx-auto px-4 py-8">
         <div className="max-w-6xl mx-auto">
+          <Button
+            variant="ghost"
+            onClick={() => navigate(-1)}
+            className="mb-6"
+          >
+            <ArrowLeft className="w-4 h-4 mr-2" />
+            Back
+          </Button>
           <div className="flex items-center justify-between mb-8">
             <div>
               <h1 className="text-4xl font-bold mb-2">Collaborative Trips</h1>
