@@ -5,7 +5,7 @@ import Navigation from "@/components/Navigation";
 import DestinationCard from "@/components/DestinationCard";
 import WeatherForecast from "@/components/WeatherForecast";
 import { toast } from "sonner";
-import { Loader2, CloudSun } from "lucide-react";
+import { Loader2, CloudSun, ArrowLeft } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 
@@ -85,6 +85,14 @@ const SavedTrips = () => {
       <Navigation />
       <div className="container mx-auto px-4 py-8">
         <div className="max-w-6xl mx-auto">
+          <Button
+            variant="ghost"
+            onClick={() => navigate(-1)}
+            className="mb-6"
+          >
+            <ArrowLeft className="w-4 h-4 mr-2" />
+            Back
+          </Button>
           <div className="mb-8">
             <h1 className="text-4xl font-bold mb-2">My Saved Trips</h1>
             <p className="text-muted-foreground">Your collection of dream destinations</p>
