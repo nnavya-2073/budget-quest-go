@@ -96,6 +96,91 @@ export type Database = {
           },
         ]
       }
+      group_messages: {
+        Row: {
+          created_at: string
+          group_id: string
+          id: string
+          message: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          group_id: string
+          id?: string
+          message: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          group_id?: string
+          id?: string
+          message?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "group_messages_group_id_fkey"
+            columns: ["group_id"]
+            isOneToOne: false
+            referencedRelation: "trip_groups"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      itinerary_items: {
+        Row: {
+          category: string | null
+          created_at: string
+          day_date: string
+          description: string | null
+          end_time: string | null
+          group_id: string
+          id: string
+          location: string | null
+          start_time: string | null
+          title: string
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          category?: string | null
+          created_at?: string
+          day_date: string
+          description?: string | null
+          end_time?: string | null
+          group_id: string
+          id?: string
+          location?: string | null
+          start_time?: string | null
+          title: string
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          category?: string | null
+          created_at?: string
+          day_date?: string
+          description?: string | null
+          end_time?: string | null
+          group_id?: string
+          id?: string
+          location?: string | null
+          start_time?: string | null
+          title?: string
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "itinerary_items_group_id_fkey"
+            columns: ["group_id"]
+            isOneToOne: false
+            referencedRelation: "trip_groups"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       profiles: {
         Row: {
           created_at: string
@@ -205,6 +290,59 @@ export type Database = {
             columns: ["user_id"]
             isOneToOne: false
             referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      transport_bookings: {
+        Row: {
+          created_at: string
+          departure_date: string
+          estimated_price: number | null
+          from_location: string
+          group_id: string
+          id: string
+          notes: string | null
+          return_date: string | null
+          to_location: string
+          transport_type: string
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          departure_date: string
+          estimated_price?: number | null
+          from_location: string
+          group_id: string
+          id?: string
+          notes?: string | null
+          return_date?: string | null
+          to_location: string
+          transport_type: string
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          departure_date?: string
+          estimated_price?: number | null
+          from_location?: string
+          group_id?: string
+          id?: string
+          notes?: string | null
+          return_date?: string | null
+          to_location?: string
+          transport_type?: string
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "transport_bookings_group_id_fkey"
+            columns: ["group_id"]
+            isOneToOne: false
+            referencedRelation: "trip_groups"
             referencedColumns: ["id"]
           },
         ]
