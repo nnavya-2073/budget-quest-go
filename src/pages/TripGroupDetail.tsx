@@ -11,6 +11,9 @@ import GroupMembers from "@/components/GroupMembers";
 import GroupInvitations from "@/components/GroupInvitations";
 import DestinationVoting from "@/components/DestinationVoting";
 import BudgetSplitView from "@/components/BudgetSplitView";
+import ItineraryBuilder from "@/components/ItineraryBuilder";
+import GroupChat from "@/components/GroupChat";
+import TransportBookingComponent from "@/components/TransportBooking";
 
 interface TripGroup {
   id: string;
@@ -118,25 +121,51 @@ const TripGroupDetail = () => {
             {group.description && (
               <p className="text-muted-foreground mb-4">{group.description}</p>
             )}
-            {group.destination_name && (
-              <p className="text-sm">
-                <span className="font-medium">Destination:</span> {group.destination_name}
-              </p>
-            )}
-            {group.total_budget && (
-              <p className="text-sm">
-                <span className="font-medium">Total Budget:</span> ₹{group.total_budget.toLocaleString()}
-              </p>
-            )}
+            <div className="flex flex-wrap gap-4 text-sm">
+              {group.destination_name && (
+                <p>
+                  <span className="font-medium">Destination:</span> {group.destination_name}
+                </p>
+              )}
+              {group.total_budget && (
+                <p>
+                  <span className="font-medium">Total Budget:</span> ₹{group.total_budget.toLocaleString()}
+                </p>
+              )}
+              {group.start_date && group.end_date && (
+                <p>
+                  <span className="font-medium">Dates:</span> {group.start_date} to {group.end_date}
+                </p>
+              )}
+            </div>
           </Card>
 
-          <Tabs defaultValue="members" className="w-full">
-            <TabsList className="grid w-full grid-cols-4">
+          <Tabs defaultValue="itinerary" className="w-full">
+            <TabsList className="grid w-full grid-cols-7 mb-4">
+              <TabsTrigger value="itinerary">Itinerary</TabsTrigger>
+              <TabsTrigger value="chat">Chat</TabsTrigger>
+              <TabsTrigger value="transport">Transport</TabsTrigger>
               <TabsTrigger value="members">Members</TabsTrigger>
-              <TabsTrigger value="voting">Vote on Destinations</TabsTrigger>
-              <TabsTrigger value="budget">Budget Split</TabsTrigger>
-              <TabsTrigger value="invitations">Invitations</TabsTrigger>
+              <TabsTrigger value="voting">Voting</TabsTrigger>
+              <TabsTrigger value="budget">Budget</TabsTrigger>
+              <TabsTrigger value="invitations">Invites</TabsTrigger>
             </TabsList>
+
+            <TabsContent value="itinerary">
+              <ItineraryBuilder 
+                groupId={groupId!} 
+                startDate={group.start_date} 
+                endDate={group.end_date} 
+              />
+            </TabsContent>
+
+            <TabsContent value="chat">
+              <GroupChat groupId={groupId!} />
+            </TabsContent>
+
+            <TabsContent value="transport">
+              <TransportBookingComponent groupId={groupId!} />
+            </TabsContent>
 
             <TabsContent value="members">
               <GroupMembers groupId={groupId!} userRole={userRole} />
