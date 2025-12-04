@@ -14,6 +14,88 @@ export type Database = {
   }
   public: {
     Tables: {
+      budget_splits: {
+        Row: {
+          amount: number
+          created_at: string
+          group_id: string
+          id: string
+          paid_amount: number | null
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          amount: number
+          created_at?: string
+          group_id: string
+          id?: string
+          paid_amount?: number | null
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          amount?: number
+          created_at?: string
+          group_id?: string
+          id?: string
+          paid_amount?: number | null
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "budget_splits_group_id_fkey"
+            columns: ["group_id"]
+            isOneToOne: false
+            referencedRelation: "trip_groups"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      destination_votes: {
+        Row: {
+          category: string | null
+          cost: number | null
+          created_at: string
+          destination_name: string
+          destination_state: string | null
+          duration: string | null
+          group_id: string
+          id: string
+          user_id: string
+        }
+        Insert: {
+          category?: string | null
+          cost?: number | null
+          created_at?: string
+          destination_name: string
+          destination_state?: string | null
+          duration?: string | null
+          group_id: string
+          id?: string
+          user_id: string
+        }
+        Update: {
+          category?: string | null
+          cost?: number | null
+          created_at?: string
+          destination_name?: string
+          destination_state?: string | null
+          duration?: string | null
+          group_id?: string
+          id?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "destination_votes_group_id_fkey"
+            columns: ["group_id"]
+            isOneToOne: false
+            referencedRelation: "trip_groups"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       profiles: {
         Row: {
           created_at: string
@@ -127,12 +209,124 @@ export type Database = {
           },
         ]
       }
+      trip_group_members: {
+        Row: {
+          group_id: string
+          id: string
+          joined_at: string
+          role: string
+          user_id: string
+        }
+        Insert: {
+          group_id: string
+          id?: string
+          joined_at?: string
+          role?: string
+          user_id: string
+        }
+        Update: {
+          group_id?: string
+          id?: string
+          joined_at?: string
+          role?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "trip_group_members_group_id_fkey"
+            columns: ["group_id"]
+            isOneToOne: false
+            referencedRelation: "trip_groups"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      trip_groups: {
+        Row: {
+          created_at: string
+          created_by: string
+          description: string | null
+          destination_name: string | null
+          end_date: string | null
+          id: string
+          name: string
+          start_date: string | null
+          total_budget: number | null
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          created_by: string
+          description?: string | null
+          destination_name?: string | null
+          end_date?: string | null
+          id?: string
+          name: string
+          start_date?: string | null
+          total_budget?: number | null
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          created_by?: string
+          description?: string | null
+          destination_name?: string | null
+          end_date?: string | null
+          id?: string
+          name?: string
+          start_date?: string | null
+          total_budget?: number | null
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      trip_invitations: {
+        Row: {
+          created_at: string
+          group_id: string
+          id: string
+          invitee_email: string
+          invitee_id: string | null
+          inviter_id: string
+          status: string
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          group_id: string
+          id?: string
+          invitee_email: string
+          invitee_id?: string | null
+          inviter_id: string
+          status?: string
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          group_id?: string
+          id?: string
+          invitee_email?: string
+          invitee_id?: string | null
+          inviter_id?: string
+          status?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "trip_invitations_group_id_fkey"
+            columns: ["group_id"]
+            isOneToOne: false
+            referencedRelation: "trip_groups"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
     }
     Views: {
       [_ in never]: never
     }
     Functions: {
-      [_ in never]: never
+      update_budget_splits: { Args: { p_group_id: string }; Returns: undefined }
     }
     Enums: {
       [_ in never]: never
